@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+const cookieParser = require('cookie-parser')
 const colors = require("colors");
 const morgan = require("morgan");
 
@@ -22,6 +23,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser())
 
 /* Listening to the port that is set in the environment. */
 app.listen(PORT, () => console.log(`listening to ${PORT}`));
