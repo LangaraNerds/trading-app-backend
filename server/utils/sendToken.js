@@ -17,9 +17,7 @@ const sendToken = asyncHandler(async (res, user, statusCode, message) => {
         email: user.email,
     };
 
-    res.statusCode(statusCode)
-        .cookie("token", token, options)
-        .json({ success: true, message, user: userData });
+    res.status(statusCode).cookie("token", token, options).json({ success: true, message, user: userData });
 });
 
 module.exports = {sendToken}
