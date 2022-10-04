@@ -87,8 +87,22 @@ const userLogout = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc   Get user profile
+// @route  /api/users/me
+// @access Private
+const userProfile = asyncHandler(async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id)
+
+        sendToken(res, user, 201, `Welcome back ${user.firstName} ${user.lastName}`);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 module.exports = {
     userSignup,
     userLogin,
     userLogout,
+    userProfile
 };
