@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 
-const sendToken = asyncHandler(async (res, user, statusCode, message) => {
-    const token = user.getJWTToken();
+const sendToken = asyncHandler(async (res, userInfo, statusCode, message) => {
+    const token = userInfo.token;
 
     const options = {
         httpOnly: true,
@@ -11,10 +11,7 @@ const sendToken = asyncHandler(async (res, user, statusCode, message) => {
     };
 
     const userData = {
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
+        email: userInfo.email,
     };
 
     res.status(statusCode).cookie("token", token, options).json({ success: true, message, user: userData });

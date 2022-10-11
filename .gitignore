@@ -3,3 +3,5 @@ node_modules/
 
 # macOS
 .DS_Store
+
+config/firebase-admin.json
