@@ -30,11 +30,13 @@ app.listen(PORT, () => console.log(`listening to ${PORT}`));
 // HTTP request logger
 app.use(morgan("dev"));
 
+// Routes
+require('./routes')(app);
+
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to Team Psyduck API." });
 });
 
-// Routes
-app.use("/api/users", require("./routes/userRoutes"));
+
 
 app.use(errorHandler);
