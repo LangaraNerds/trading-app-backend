@@ -4,6 +4,10 @@ const bcrypt = require('bcryptjs')
 const { ObjectId } = mongoose.SchemaTypes;
 
 const userSchema = mongoose.Schema({
+    firebase_uuid: {
+        type: String,
+        required: [false, 'Please add a firebase uuid'],
+    },
     fullName: {
         type: String,
         required: [false, 'Please add full name'],

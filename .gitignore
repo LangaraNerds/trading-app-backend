@@ -5,3 +5,4 @@ node_modules/
 .DS_Store
 
 config/firebase-admin.json
+config/firebase-config.js
