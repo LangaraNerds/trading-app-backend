@@ -21,6 +21,7 @@
     "firebase-admin": "^11.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "unique-username-generator": "^1.1.1"
   }
 }

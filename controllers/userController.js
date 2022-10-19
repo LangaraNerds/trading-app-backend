@@ -1,10 +1,13 @@
 const asyncHandler = require("express-async-handler");
 // password encryption
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
+// const bcrypt = require("bcryptjs");
+// const jwt = require("jsonwebtoken");
+const {
+	generateFromEmail,
+	generateUsername,
+} = require("unique-username-generator");
 const User = require("../models/userModel");
-const { sendToken } = require("../utils/sendToken");
+// const { sendToken } = require("../utils/sendToken");
 
 require("../config/firebase-config");
 const {
@@ -28,7 +31,8 @@ admin.initializeApp({
 // @route  /api/users/signup
 // @access Public
 const userSignup = asyncHandler(async (req, res) => {
-	const { email, password } = req.body;
+	const { email, password, location } = req.body;
+
 	try {
 		// Check if user mail already exists
 		let user = await User.findOne({ email });
@@ -47,10 +51,21 @@ const userSignup = asyncHandler(async (req, res) => {
 			password
 		);
 
+		// generate username from email and add 3 random digits
+		const username = generateFromEmail(email, 3);
+
 		// Create user
 		user = await User.create({
 			firebase_uuid: credential.user.uid,
 			email: email,
+			username: username,
+			location: {
+				type: "Point",
+				coordinates: [location.longitude, location.latitude],
+				city: location.city,
+				state: location.state,
+				country: location.country,
+			},
 		});
 
 		const adminAuth = getAdminAuth();
