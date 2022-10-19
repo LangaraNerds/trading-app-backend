@@ -54,6 +54,11 @@ const userSignup = asyncHandler(async (req, res) => {
 		// generate username from email and add 3 random digits
 		const username = generateFromEmail(email, 3);
 
+		userData = {
+			firebase_uuid: credential.user.uid,
+			username,
+		}
+
 		// Create user
 		user = await User.create({
 			firebase_uuid: credential.user.uid,
@@ -61,10 +66,10 @@ const userSignup = asyncHandler(async (req, res) => {
 			username: username,
 			location: {
 				type: "Point",
-				coordinates: [location.longitude, location.latitude],
-				city: location.city,
-				state: location.state,
-				country: location.country,
+				coordinates: location ? [location.longitude, location.latitude] : [0, 0],
+				city: location ? location.city : "",
+				state: location ? location.state : "",
+				country: location ? location.country : "",
 			},
 		});
 
