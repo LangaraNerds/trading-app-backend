@@ -1,12 +1,13 @@
-const mongoose = require('mongoose')
-const { ObjectId } = mongoose.SchemaTypes;
+const {Schema, model} = require('mongoose')
 
-const userSchema = mongoose.Schema({
+const assetsSchema = new Schema({
         name: {
             type: String,
             required: [false, 'Please add a Name'],
         },
-        user_id: ObjectId,
+        user_id: {
+            type: String,
+        },
         quantity: {
             type: Number,
             required: [false, 'Please add the Quantity'],
@@ -14,11 +15,12 @@ const userSchema = mongoose.Schema({
         },
         ticker: {
             type: String,
-            required: [true, 'Please add an Ticker'],
-            unique: true
+            required: [false, 'Please add an Ticker'],
         },
     },
     {
         timestamps: true,
     })
-module.exports = mongoose.model('Assets', userSchema)
+
+
+module.exports = model('Assets', assetsSchema)
