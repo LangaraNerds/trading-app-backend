@@ -16,16 +16,20 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
         const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinTicker}`);
         const coinJson = coinFetch.data;
         const coinPrice = coinJson.price
+        const assetAmount = asset.quantity
 
         let balance = user.wallet.balance
         const checkAmount = amount * coinPrice
+        const totalPrice = amount * coinPrice;
 
         if (balance >= checkAmount) {
+
+        let newAmount =  assetAmount + amount;
 
             const updateAmount = await Asset.updateOne({_id: asset.id},
                 {
                     $set: {
-                        quantity: amount
+                        quantity: newAmount
                     }
                 }
             )
@@ -42,6 +46,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
             res.status(201).json({
                 success: true,
                 coinAmount: amount,
+                totalPrice: totalPrice,
                 message: "Success",
             });
         } else {
@@ -74,7 +79,7 @@ exports.sellCoin = asyncHandler(async ({body}, res) => {
         let balance = user.wallet.balance;
 
         balance = balance + (amount * coinPrice);
-
+        const totalPrice = amount * coinPrice;
         if (assetQuantity >= amount) {
             const updateBalance = await User.updateOne({_id: user.id}, {
                 $set: {
@@ -96,7 +101,7 @@ exports.sellCoin = asyncHandler(async ({body}, res) => {
             res.status(201).json({
                 success: true,
                 coinAmount: amount,
-                balance: balance,
+                totalPrice: totalPrice,
                 message: "Success",
             });
         } else {
