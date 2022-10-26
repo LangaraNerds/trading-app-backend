@@ -4,7 +4,9 @@ const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 
 
+
 exports.buyCoin = asyncHandler(async ({body}, res) => {
+    //rename amount to coinAmount
     const {userId, amount, coinTicker} = body
 
     try {
@@ -12,15 +14,14 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
         const user = await User.findOne({firebase_uuid: userId});
         const asset = await Asset.findOne({user_id: userId, ticker: coinTicker});
 
-
         const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinTicker}`);
-        const coinJson = coinFetch.data;
+        const coinJson = coinFetch.data
         const coinPrice = coinJson.price
         const assetAmount = asset.quantity
 
         let balance = user.wallet.balance
         const checkAmount = amount * coinPrice
-        const totalPrice = amount * coinPrice;
+        const totalPrice = amount * coinPrice
 
         if (balance >= checkAmount) {
 
@@ -52,14 +53,15 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
         } else {
             res.status(401).json({
                 success: true,
-                message: "sorry, something went wrong",
+                message: "Not enough Money",
             });
         }
     } catch (error) {
         console.log(error);
-        status(500).json({success: false, message: error.message});
+        res.status(500).json({success: false, message: error.message});
     }
 });
+
 
 exports.sellCoin = asyncHandler(async ({body}, res) => {
     const {userId, amount, coinTicker} = body
