@@ -3,11 +3,12 @@ const Asset = require("../models/assetsModel");
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 
-exports.userWallet = async ({body}, res) => {
+exports.userWallet = asyncHandler(async ({body}, res) => {
     const {userId} = body
     // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"
     try {
         const user = await User.findOne({firebase_uuid: userId});
+        console.log(user)
 
         const assets = await Asset.find({user_id: userId});
 
@@ -39,4 +40,45 @@ exports.userWallet = async ({body}, res) => {
     }
 
 
-}
+});
+
+exports.walletAssets = asyncHandler(async ({body}, res) => {
+    const {userId} = body
+    // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"
+    try {
+        const user = await User.findOne({firebase_uuid: userId});
+        console.log(user)
+
+        const assets = await Asset.find({user_id: userId});
+
+        /*https://www.binance.me/api/v3/ticker/price?symbols=%5B"ETHUSDT","BTCUSDT","XRPUSDT"%5D
+        * To do
+        * change to the other api to do only one request
+        * */
+        let assetArr = []
+        for (const asset of assets) {
+            let assetBalance = 0
+            const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${asset.ticker}`);
+            const coinJson = coinFetch.data
+            const coinPrice = coinJson.price
+            assetBalance = asset.quantity * coinPrice;
+            assetArr.push({
+                name: asset.name,
+                ticker: asset.ticker,
+                quantity: asset.quantity,
+                usdtBalance: assetBalance
+            })
+
+        }
+        res.status(201).json({
+            success: true,
+            assets: assetArr,
+            message: "Success",
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({success: false, message: error.message});
+    }
+
+})
+
