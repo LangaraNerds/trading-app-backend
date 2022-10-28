@@ -1,5 +1,7 @@
 const Asset = require("../models/assetsModel");
 const User = require("../models/userModel");
+const BuyHistory = require ("../models/buyHistoryModel")
+const SellHistory = require ("../models/sellHistoryModel")
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 
@@ -35,12 +37,19 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
                 }
             )
             if (updateAmount) {
-
-                balance = balance - (amount * coinPrice)
+               let totalPrice = (amount * coinPrice)
+                balance = balance - usdtPrice
                 await User.updateOne({_id: user.id}, {
                     $set: {
                         "wallet.balance": balance,
                     }
+                })
+                await BuyHistory.create({
+                    user_id: userId,
+                    ticker: coinTicker,
+                    quantity: amount,
+                    price: coinPrice,
+                    totalPrice: totalPrice
                 })
             }
             // status 201 return amount and run for the hug
@@ -65,9 +74,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
 
 exports.sellCoin = asyncHandler(async ({body}, res) => {
     const {userId, amount, coinTicker} = body
-    // amount = 50;
-    // userId = "DT43KUDU1ncHekqhESD5wELhp183";
-    // coinTicker = 'DOGEUSDT';
+
     try {
 
         const user = await User.findOne({firebase_uuid: userId});
@@ -98,6 +105,14 @@ exports.sellCoin = asyncHandler(async ({body}, res) => {
                         }
                     }
                 )
+                await SellHistory.create({
+                    user_id: userId,
+                    ticker: coinTicker,
+                    quantity: amount,
+                    price: coinPrice,
+                    totalPrice: totalPrice
+                })
+
             }
             // status 201 return amount and run for the hug
             res.status(201).json({
@@ -114,3 +129,4 @@ exports.sellCoin = asyncHandler(async ({body}, res) => {
         res.status(500).json({success: false, message: error.message});
     }
 });
+
