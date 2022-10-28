@@ -3,6 +3,12 @@ const Asset = require("../models/assetsModel");
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 
+
+/**
+ * @desc get balance of USDT of user
+ * @route /api/wallet
+ * @param userId
+* */
 exports.userWallet = asyncHandler(async ({body}, res) => {
     const {userId} = body
     // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"
@@ -42,6 +48,11 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
 
 });
 
+/**
+ * @desc get coin with currentPrice and quantity owned
+ * @route /api/wallet/assets
+ * @param userId
+ * */
 exports.walletAssets = asyncHandler(async ({body}, res) => {
     const {userId} = body
     // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"

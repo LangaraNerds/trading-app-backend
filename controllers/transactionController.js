@@ -1,12 +1,18 @@
 const Asset = require("../models/assetsModel");
 const User = require("../models/userModel");
-const BuyHistory = require ("../models/buyHistoryModel")
-const SellHistory = require ("../models/sellHistoryModel")
+const BuyHistory = require("../models/buyHistoryModel")
+const SellHistory = require("../models/sellHistoryModel")
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 
 
-
+/**
+ * @desc buy crypto coin
+ * @route /api/buy
+ * @param userId
+ * @param coinAmount
+ * @param coinTicker
+ * */
 exports.buyCoin = asyncHandler(async ({body}, res) => {
     //rename amount to coinAmount
     const {userId, amount, coinTicker} = body
@@ -27,7 +33,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
 
         if (balance >= checkAmount) {
 
-        let newAmount =  assetAmount + amount;
+            let newAmount = assetAmount + amount;
 
             const updateAmount = await Asset.updateOne({_id: asset.id},
                 {
@@ -37,8 +43,8 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
                 }
             )
             if (updateAmount) {
-               let totalPrice = (amount * coinPrice)
-                balance = balance - usdtPrice
+                let totalPrice = (amount * coinPrice)
+                balance = balance - totalPrice
                 await User.updateOne({_id: user.id}, {
                     $set: {
                         "wallet.balance": balance,
@@ -61,7 +67,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
             });
         } else {
             res.status(401).json({
-                success: true,
+                success: false,
                 message: "Not enough Money",
             });
         }
@@ -71,7 +77,13 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
     }
 });
 
-
+/**
+ * @desc buy crypto coin
+ * @route /api/buy
+ * @param userId
+ * @param coinAmount
+ * @param coinTicker
+ * */
 exports.sellCoin = asyncHandler(async ({body}, res) => {
     const {userId, amount, coinTicker} = body
 
