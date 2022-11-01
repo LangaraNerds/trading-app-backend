@@ -2,6 +2,7 @@ const Asset = require("../models/assetsModel");
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
+const {symbols} = require("../utils/constants");
 
 
 exports.coinSingle = asyncHandler(async ({body}, res) => {
@@ -32,3 +33,64 @@ exports.coinSingle = asyncHandler(async ({body}, res) => {
     }
 
 });
+/**
+ @desc -put description here-
+ @route /api/crypto/****
+* */
+exports.trendingCoins = asyncHandler( async (req, res) =>{
+    try {
+        const trending = await axios.get('https://api.binance.com/api/v3/ticker/24hr');
+        const trendingCoins = trending.data;
+        // const listOfCoins = trendingCoins.find(item => item.symbol === "BTCUSDT" & item.symbol === "BTCUSDT");
+        let listOfCoins = [];
+        let listCoinsWSV = [];
+
+        for (i = 0; i < symbols.length; i++) {
+            // console.log(symbols[i]);
+
+            listOfCoins.push(trendingCoins.find(item => item.symbol === symbols[i]));
+        }
+
+        // for (i = 0; i < listOfCoins.length; i++) {
+        //     let symbolAndCount =[
+        //         listOfCoins[i].count,
+        //         listOfCoins[i].symbol
+        //     ]
+        //     listCoinsWSV.push(symbolAndCount)
+        // }
+
+
+
+
+
+        listOfCoins.forEach((coins) => {
+            let symbolAndCount = {
+                count: coins.count,
+                symbol: coins.symbol
+            }
+            listCoinsWSV.push(symbolAndCount)
+
+
+        });
+
+
+
+        let listSortedCoins = listCoinsWSV.sort((c1, c2) => (c1.count < c2.count) ? 1 : (c1.count > c2.count) ? -1 : 0);
+
+        //types of 'for`s' "for", "for...of", "for..in", "forEach"
+
+        res.status(200).json({
+            success: true,
+            message: "Success",
+            //trendingCoins: trendingCoins
+            // listOfCoins: listOfCoins
+            // listCoinsWSV: listCoinsWSV
+            listSortedCoins: listSortedCoins
+        })
+
+    }catch (e) {
+        res.status(500).json({success: false, message: e.message});
+
+    }
+
+})
