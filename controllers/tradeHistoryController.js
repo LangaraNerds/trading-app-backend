@@ -30,10 +30,12 @@ exports.tradeHistory = asyncHandler(async ({body}, res) => {
             item._doc.type = "Sell";
         })
 
-        const tradeInfo = [...buy,...sell].sort()
+        // merge buy and sell and sort
+        const tradeInfo = [...buy,...sell].sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
 
-
-        console.log(buy)
+        console.log("tradeInfo",tradeInfo)
         res.status(200).json({
             success: true,
             tradeInfo: tradeInfo,
