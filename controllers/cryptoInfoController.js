@@ -59,21 +59,18 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
         //     listCoinsWSV.push(symbolAndCount)
         // }
 
-
-
+        // console.log(trendingCoins)
 
 
         listOfCoins.forEach((coins) => {
             let symbolAndCount = {
                 count: coins.count,
-                symbol: coins.symbol
+                symbol: coins.symbol,
+                priceChangePercent: coins.priceChangePercent,
+                lastPrice: coins.lastPrice,
             }
             listCoinsWSV.push(symbolAndCount)
-
-
         });
-
-
 
         let listSortedCoins = listCoinsWSV.sort((c1, c2) => (c1.count < c2.count) ? 1 : (c1.count > c2.count) ? -1 : 0);
 
@@ -82,7 +79,7 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
         res.status(200).json({
             success: true,
             message: "Success",
-            //trendingCoins: trendingCoins
+            // trendingCoins: trendingCoins,
             // listOfCoins: listOfCoins
             // listCoinsWSV: listCoinsWSV
             listSortedCoins: listSortedCoins
