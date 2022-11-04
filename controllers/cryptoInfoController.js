@@ -90,9 +90,8 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
             listSortedCoins: listSortedCoins
         })
 
-    }catch (e) {
-        res.status(500).json({success: false, message: e.message});
-
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message});
     }
 
 })
