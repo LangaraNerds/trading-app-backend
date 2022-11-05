@@ -27,9 +27,12 @@ admin.initializeApp({
 // @route  /api/users/signup
 // @access Public
 const userSignup = asyncHandler(async (req, res) => {
-    const {email, password, location} = req.body;
+    let {email, password, location} = req.body;
 
     try {
+
+        email = email.toLowerCase().trim();
+
         // Check if user mail already exists
         let user = await User.findOne({email});
 
@@ -80,10 +83,31 @@ const userSignup = asyncHandler(async (req, res) => {
         res.status(201).json({
             success: true,
             token: token,
+            userId: credential.user.uid,
             message: "Login success",
         });
     } catch (error) {
-        res.status(500).json({success: false, message: error.message});
+
+        switch (error.code) {
+            case "auth/invalid-email":
+                res.status(404).json({
+                    success: false,
+                    message: "Invalid email. Please try again.",
+                });
+                break;
+            case "auth/email-already-in-use":
+                res.status(401).json({
+                    success: false,
+                    message: "Email already in use. Please try again.",
+                });
+                break;
+            default:
+                res.status(500).json({
+                    success: false,
+                    message: error.message,
+                });
+                break;
+        }
         console.log("Signup Error", error);
     }
 });
@@ -146,9 +170,11 @@ async function seedAssets(user_id) {
 // @route  /api/users/login
 // @access Public
 const userLogin = asyncHandler(async (req, res) => {
-    const {email, password} = req.body;
+    let {email, password} = req.body;
 
     try {
+
+        email = email.toLowerCase().trim();
         const credential = await signInWithEmailAndPassword(
             getAuth(),
             email,
@@ -221,9 +247,9 @@ const userLogout = asyncHandler(async (req, res) => {
 const userProfile = asyncHandler(async (req, res) => {
     try {
         // const userId = req.params.id;
-        const fbuid = req.token.uid;
+        const fbuuid = req.token.uid;
 
-        const user = await User.findOne({firebase_uuid: fbuid}).exec();
+        const user = await User.findOne({firebase_uuid: fbuuid}).exec();
         // if (userId !== req.token.uid) {
         //     res.status(403).json({ success: false, error: { code: 'unauthorized' } });
         // }

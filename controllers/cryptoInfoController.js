@@ -41,6 +41,7 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
     try {
         const trending = await axios.get('https://api.binance.com/api/v3/ticker/24hr');
         const trendingCoins = trending.data;
+        // const listOfCoins = trendingCoins.find(item => item.symbol === "BTCUSDT" & item.symbol === "BTCUSDT");
         let listOfCoins = [];
         let listCoinsWSV = [];
 
