@@ -171,7 +171,6 @@ async function seedAssets(user_id) {
 // @desc   Login a new user
 // @route  /api/users/login
 // @access Public
-
 const userLogin = asyncHandler(async (req, res) => {
     let {email, password} = req.body;
 
@@ -188,16 +187,16 @@ const userLogin = asyncHandler(async (req, res) => {
         );
 
         const user = await User.findOne({firebase_uuid: credential.user.uid});
-        let fmc_token
+        let fcm_token
 
-        user.fmc_token == null ? fmc_token = 0 : fmc_token = 1;
+        user.fcm_token == null ? fcm_token = 0 : fcm_token = 1;
 
 
         res.status(200).json({
             success: true,
             token: token,
             userId: credential.user.uid,
-            fmc_token: fmc_token,
+            fcm_token: fcm_token,
             message: "Login success",
         });
     } catch (error) {
@@ -276,20 +275,20 @@ const userProfile = asyncHandler(async (req, res) => {
     }
 });
 /**
- * @desc update user with fmc_token
+ * @desc update user with fcm_token
  * @route /user/token
  * @param userId
  * @param token
  * */
-const userFMCToken = asyncHandler(async ({body}, res) => {
+const userFCMToken = asyncHandler(async ({body}, res) => {
     const {userId, token} = body
     try {
         const user = await User.findOne({firebase_uuid: userId});
-        const hasToken = user.fmc_token;
+        const hasToken = user.fcm_token;
         if (!hasToken) {
             await User.updateOne({_id: user.id}, {
                 $set: {
-                    "fmc_token": token,
+                    "fcm_token": token,
                 }
             })
             res.status(200).json({
@@ -312,5 +311,5 @@ module.exports = {
     userLogin,
     userLogout,
     userProfile,
-    userFMCToken
+    userFCMToken
 };
