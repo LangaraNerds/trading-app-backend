@@ -6,8 +6,8 @@ const User = require("../models/userModel");
 // This registration token comes from the client FCM SDKs.
 exports.pushNotification = asyncHandler(async(userId, price, coinName, coinTicker) =>{
 
-    const user = await User.find({firebase_uuid: userId}, {fmc_token: 1});
-    const token = user.fmc_token
+    const user = await User.find({firebase_uuid: userId}, {fcm_token: 1});
+    const token = user.fcm_token
 
     const message = {
         data: {
