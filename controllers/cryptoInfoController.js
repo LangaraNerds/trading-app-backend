@@ -62,9 +62,6 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
             "TRXUSDT",
         ];
 
-
-
-
         listOfCoins.forEach((coins) => {
 
             // filter out coins that are not supported
