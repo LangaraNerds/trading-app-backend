@@ -37,8 +37,8 @@ exports.coinSingle = asyncHandler(async ({body}, res) => {
 /**
  @desc -put description here-
  @route /api/crypto/****
- * */
-exports.trendingCoins = asyncHandler(async (req, res) => {
+* */
+exports.trendingCoins = asyncHandler( async (req, res) =>{
     try {
         const trending = await axios.get('https://api.binance.com/api/v3/ticker/24hr');
         const trendingCoins = trending.data;
@@ -48,28 +48,37 @@ exports.trendingCoins = asyncHandler(async (req, res) => {
 
         for (let i = 0; i < symbols.length; i++) {
             // console.log(symbols[i]);
-
             listOfCoins.push(trendingCoins.find(item => item.symbol === symbols[i]));
         }
 
-        // for (i = 0; i < listOfCoins.length; i++) {
-        //     let symbolAndCount =[
-        //         listOfCoins[i].count,
-        //         listOfCoins[i].symbol
-        //     ]
-        //     listCoinsWSV.push(symbolAndCount)
-        // }
+        const supportedSymbols = [
+            "BTCUSDT",
+            "ETHUSDT",
+            "BNBUSDT",
+            "XRPUSDT",
+            "ADAUSDT",
+            "SOLUSDT",
+            "DOGEUSDT",
+            "TRXUSDT",
+        ];
+
+
 
 
         listOfCoins.forEach((coins) => {
-            let symbolAndCount = {
-                count: coins.count,
-                symbol: coins.symbol
+
+            // filter out coins that are not supported
+            if (supportedSymbols.includes(coins.symbol)) {
+                let symbolAndCount = {
+                    count: coins.count,
+                    symbol: coins.symbol,
+                    priceChangePercent: coins.priceChangePercent,
+                    lastPrice: coins.lastPrice,
+                }
+                listCoinsWSV.push(symbolAndCount)
             }
-            listCoinsWSV.push(symbolAndCount)
-
-
         });
+
 
 
         let listSortedCoins = listCoinsWSV.sort((c1, c2) => (c1.count < c2.count) ? 1 : (c1.count > c2.count) ? -1 : 0);
@@ -79,7 +88,7 @@ exports.trendingCoins = asyncHandler(async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Success",
-            //trendingCoins: trendingCoins
+            // trendingCoins: trendingCoins,
             // listOfCoins: listOfCoins
             // listCoinsWSV: listCoinsWSV
             listSortedCoins: listSortedCoins
@@ -128,4 +137,4 @@ exports.priceAlert = asyncHandler(async ({body}, res) => {
         res.status(500).json({success: false, message: e.message});
     }
 
-});
+})

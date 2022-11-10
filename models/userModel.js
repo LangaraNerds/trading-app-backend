@@ -15,6 +15,16 @@ const userSchema = new Schema(
             unique: true,
             trim: true,
         },
+        firstName: {
+            type: String,
+            required: [false, "Please add a first name"],
+            trim: true,
+        },
+        lastName: {
+            type: String,
+            required: [false, "Please add a last name"],
+            trim: true,
+        },
         email: {
             type: String,
             required: [true, "Please add an email"],
@@ -62,6 +72,11 @@ const userSchema = new Schema(
             country: String,
         },
         required: false,
+        isTutorial: {
+            type: Boolean,
+            required: [false, "Please add a tutorial status"],
+            default: true,
+        },
     },
     {
         timestamps: true,
