@@ -30,6 +30,11 @@ const userSchema = new Schema(
             required: [true, "Please add an email"],
             unique: true,
         },
+        fmc_token: {
+            type: String,
+            required: [true, "Please add an fmc_token"],
+            unique: true,
+        },
         wallet: {
             name: {
                 type: String,

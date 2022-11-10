@@ -171,6 +171,7 @@ async function seedAssets(user_id) {
 // @desc   Login a new user
 // @route  /api/users/login
 // @access Public
+
 const userLogin = asyncHandler(async (req, res) => {
     let {email, password} = req.body;
 
@@ -186,10 +187,17 @@ const userLogin = asyncHandler(async (req, res) => {
             credential.user.uid
         );
 
+        const user = await User.findOne({firebase_uuid: credential.user.uid});
+        let fmc_token
+
+        user.fmc_token == null ? fmc_token = 0 : fmc_token = 1;
+
+
         res.status(200).json({
             success: true,
             token: token,
             userId: credential.user.uid,
+            fmc_token: fmc_token,
             message: "Login success",
         });
     } catch (error) {
@@ -267,10 +275,42 @@ const userProfile = asyncHandler(async (req, res) => {
         res.status(500).json({success: false, message: error.message});
     }
 });
+/**
+ * @desc update user with fmc_token
+ * @route /user/token
+ * @param userId
+ * @param token
+ * */
+const userFMCToken = asyncHandler(async ({body}, res) => {
+    const {userId, token} = body
+    try {
+        const user = await User.findOne({firebase_uuid: userId});
+        const hasToken = user.fmc_token;
+        if (!hasToken) {
+            await User.updateOne({_id: user.id}, {
+                $set: {
+                    "fmc_token": token,
+                }
+            })
+            res.status(200).json({
+                success: true,
+                message: `token successfully save `,
+            });
+        } else {
+            res.status(401).json({
+                success: true,
+                message: `user already has a token`,
+            });
+        }
 
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message});
+    }
+});
 module.exports = {
     userSignup,
     userLogin,
     userLogout,
     userProfile,
+    userFMCToken
 };
