@@ -1,8 +1,9 @@
 const Asset = require("../models/assetsModel");
 const User = require("../models/userModel");
+const PriceAlert = require("../models/priceAlertModel");
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
-const {symbols} = require("../utils/constants");
+const {symbols, coinName} = require("../utils/constants");
 
 
 exports.coinSingle = asyncHandler(async ({body}, res) => {
@@ -45,7 +46,7 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
         let listOfCoins = [];
         let listCoinsWSV = [];
 
-        for (i = 0; i < symbols.length; i++) {
+        for (let i = 0; i < symbols.length; i++) {
             // console.log(symbols[i]);
             listOfCoins.push(trendingCoins.find(item => item.symbol === symbols[i]));
         }
@@ -61,7 +62,8 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
             "TRXUSDT",
         ];
 
-        // console.log(trendingCoins)
+
+
 
         listOfCoins.forEach((coins) => {
 
@@ -77,6 +79,8 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
             }
         });
 
+
+
         let listSortedCoins = listCoinsWSV.sort((c1, c2) => (c1.count < c2.count) ? 1 : (c1.count > c2.count) ? -1 : 0);
 
         //types of 'for`s' "for", "for...of", "for..in", "forEach"
@@ -90,8 +94,47 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
             listSortedCoins: listSortedCoins
         })
 
+    } catch (e) {
+        res.status(500).json({success: false, message: e.message});
+
+    }
+
+})
+
+/**
+ * @desc save the price Alert for coin
+ * @route /api/crypto/alert
+ * @param userID
+ * @param coinTicker
+ * @param price
+ *
+ * */
+exports.priceAlert = asyncHandler(async ({body}, res) => {
+
+//firebase notification
+
+    const {userId, coinTicker, price} = body
+    try {
+        // const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinTicker}`);
+        // const coinJson = coinFetch.data;
+        // const coinPrice = coinJson.price;
+        const name = coinName(coinTicker)
+        await PriceAlert.create(
+            {
+                price: price,
+                user_id: userId,
+                ticker: coinTicker,
+                name: name
+            }
+        )
+        console.log(name)
+        res.status(200).json({
+            success: true,
+            message: "Success",
+        });
+
     } catch (error) {
-        res.status(500).json({success: false, message: error.message});
+        res.status(500).json({success: false, message: e.message});
     }
 
 })
