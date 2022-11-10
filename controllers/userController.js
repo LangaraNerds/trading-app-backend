@@ -23,9 +23,11 @@ admin.initializeApp({
     credential: admin.credential.cert(credentials),
 });
 
-// @desc   Register a new user
-// @route  /api/users/signup
-// @access Public
+/**
+ @desc   Register a new user
+ @route  /api/users/signup
+ @access Public
+ */
 const userSignup = asyncHandler(async (req, res) => {
     let {email, password, location} = req.body;
 
