@@ -103,12 +103,13 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
  * @param userId
  * @param coinTicker
  * @param price
+ * @param alertType (up, down)
  * */
 exports.priceAlert = asyncHandler(async ({body}, res) => {
 
 //firebase notification
 
-    const {userId, coinTicker, price} = body
+    const {userId, coinTicker, price, alertType} = body
     try {
 
         const name = coinName(coinTicker)
@@ -117,7 +118,8 @@ exports.priceAlert = asyncHandler(async ({body}, res) => {
                 price: price,
                 user_id: userId,
                 ticker: coinTicker,
-                name: name
+                name: name,
+                type: alertType
             }
         )
         console.log(name)
