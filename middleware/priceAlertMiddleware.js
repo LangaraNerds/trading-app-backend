@@ -25,7 +25,7 @@ exports.AlertTasks = () => {
                     if (coinPrice >= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
-                }else if(alertPrice.type === 'down'){
+                } else if (alertPrice.type === 'down') {
                     if (coinPrice <= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
@@ -52,7 +52,7 @@ exports.AlertTasks = () => {
                     if (coinPrice >= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
-                }else if(alertPrice.type === 'down'){
+                } else if (alertPrice.type === 'down') {
                     if (coinPrice <= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
@@ -69,6 +69,7 @@ exports.AlertTasks = () => {
 
 
     scheduler.addSimpleIntervalJob(dogeJob)
+    scheduler.addSimpleIntervalJob(btcJob)
 
     console.log(scheduler.getById('doge').getStatus());
 
