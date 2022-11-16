@@ -188,7 +188,6 @@ const userLogin = asyncHandler(async (req, res) => {
 
         const user = await User.findOne({firebase_uuid: credential.user.uid});
 
-
         res.status(200).json({
             success: true,
             token: token,
