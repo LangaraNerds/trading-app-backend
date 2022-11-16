@@ -48,6 +48,7 @@ exports.AlertTasks = () => {
 
             for (const alertPrice of coinAlerts) {
                 console.log(`alert-price ${alertPrice.price}`)
+
                 if (alertPrice.type === 'up') {
                     if (coinPrice >= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
@@ -56,7 +57,7 @@ exports.AlertTasks = () => {
                     if (coinPrice <= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
-                }
+
             }
             pushNotification(usersId, coinPrice, "BTC", "BTCUSDT");
         }
