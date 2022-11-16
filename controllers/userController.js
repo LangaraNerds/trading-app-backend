@@ -191,7 +191,6 @@ const userLogin = asyncHandler(async (req, res) => {
 
         user.fcm_token == null ? fcm_token = 0 : fcm_token = 1;
 
-
         res.status(200).json({
             success: true,
             token: token,
