@@ -5,7 +5,7 @@ const PriceAlert = require("../models/priceAlertModel");
 const {priceAlert} = require("../controllers/cryptoInfoController");
 
 
-exports.pushNotification = asyncHandler(async (userTokens, coinPrice, coinName, coinTicker) => {
+exports.pushNotification = asyncHandler(async (usersId, coinPrice, coinName, coinTicker) => {
     // const user = await User.find({firebase_uuid: userId}, {fcm_token: 1});
     // const token = user.fcm_token
 
@@ -13,13 +13,17 @@ exports.pushNotification = asyncHandler(async (userTokens, coinPrice, coinName, 
     // optionally providing an access token if you have enabled push security
     let expo = new Expo();
     //ExponentPushToken[ULYivqCKoSg1JqYVNjr_yb]
-
+    let userTokens = [];
 
     // for (const userId in usersId) {
     //     let userToken = await User.find({firebase_uuid: userId}, {fcm_token: 1})
     //     userTokens.push(userToken.fcm_token)
     // }
 
+    for (const user of usersId){
+        const userToken = await User.findOne({firebase_uuid: user})
+        userTokens.push(userToken.fcm_token)
+    }
 
     // Create the messages that you want to send to clients
     let messages = [];
@@ -53,6 +57,7 @@ exports.pushNotification = asyncHandler(async (userTokens, coinPrice, coinName, 
                 notified: true
             }
         })
+
     }
 
 // The Expo push notification service accepts batches of notifications so
