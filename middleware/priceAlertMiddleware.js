@@ -25,7 +25,7 @@ exports.AlertTasks = () => {
                     if (coinPrice >= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
-                }else if(alertPrice.type === 'down'){
+                } else if (alertPrice.type === 'down') {
                     if (coinPrice <= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
@@ -53,31 +53,31 @@ exports.AlertTasks = () => {
                     if (coinPrice >= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
-                }else if(alertPrice.type === 'down'){
+                } else if (alertPrice.type === 'down') {
                     if (coinPrice <= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
 
+                }
+                pushNotification(usersId, coinPrice, "BTC", "BTCUSDT");
             }
-            pushNotification(usersId, coinPrice, "BTC", "BTCUSDT");
+
         }
-
     })
-
-
     const dogeJob = new SimpleIntervalJob({seconds: 30,}, dogeAlert, {id: 'doge', preventOverrun: true,})
     const btcJob = new SimpleIntervalJob({seconds: 30,}, btcAlert, {id: 'btc', preventOverrun: true,})
 
 
     scheduler.addSimpleIntervalJob(dogeJob)
+    scheduler.addSimpleIntervalJob(btcJob)
 
     console.log(scheduler.getById('doge').getStatus());
 
 }
-
 exports.stopTasks = () => {
     const scheduler = new ToadScheduler()
     scheduler.stop()
 }
+
 
 
