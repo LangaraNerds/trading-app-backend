@@ -59,7 +59,7 @@ exports.AlertTasks = () => {
                     }
 
                 }
-                pushNotification(usersId, coinPrice, "BTC", "BTCUSDT");
+                pushNotification(usersId, coinPrice, alertPrice.price ,"BTC", "BTCUSDT");
             }
 
         }

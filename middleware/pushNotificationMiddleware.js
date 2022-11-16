@@ -5,7 +5,7 @@ const PriceAlert = require("../models/priceAlertModel");
 const {priceAlert} = require("../controllers/cryptoInfoController");
 
 
-exports.pushNotification = asyncHandler(async (usersId, coinPrice, coinName, coinTicker) => {
+exports.pushNotification = asyncHandler(async (usersId, coinPrice,alertPrice, coinName, coinTicker) => {
     // const user = await User.find({firebase_uuid: userId}, {fcm_token: 1});
     // const token = user.fcm_token
 
@@ -52,12 +52,11 @@ exports.pushNotification = asyncHandler(async (usersId, coinPrice, coinName, coi
             },
         })
 
-        await PriceAlert.updateMany({price: coinPrice, ticker: coinTicker, notified: false}, {
+        await PriceAlert.updateMany({price: alertPrice, ticker: coinTicker, notified: false}, {
             $set: {
                 notified: true
             }
         })
-
     }
 
 // The Expo push notification service accepts batches of notifications so

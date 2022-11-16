@@ -3,7 +3,7 @@ const {AlertTasks,} = require("../middleware/priceAlertMiddleware");
 
 module.exports = function (app) {
 
-    router.get("/alert", [AlertTasks], (req, res) => {
+    router.get("/alert", [AlertTasks], (req, res, next) => {
         res.json({message: "Jobs started!"});
     });
 
