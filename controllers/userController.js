@@ -187,15 +187,12 @@ const userLogin = asyncHandler(async (req, res) => {
         );
 
         const user = await User.findOne({firebase_uuid: credential.user.uid});
-        let fcm_token
-
-        user.fcm_token == null ? fcm_token = 0 : fcm_token = 1;
 
         res.status(200).json({
             success: true,
             token: token,
             userId: credential.user.uid,
-            fcm_token: fcm_token,
+            fcm_token: user.fcm_token,
             message: "Login success",
         });
     } catch (error) {

@@ -20,9 +20,15 @@ exports.AlertTasks = () => {
             console.log(`market-price: ${coinPrice}`)
 
             for (const alertPrice of coinAlerts) {
-                    console.log(`alert-price ${alertPrice.price}`)
-                if (coinPrice === alertPrice.price && alertPrice.notified === false) {
-                    usersId.push(alertPrice.user_id)
+                console.log(`alert-price ${alertPrice.price}`)
+                if (alertPrice.type === 'up') {
+                    if (coinPrice >= alertPrice.price && alertPrice.notified === false) {
+                        usersId.push(alertPrice.user_id)
+                    }
+                }else if(alertPrice.type === 'down'){
+                    if (coinPrice <= alertPrice.price && alertPrice.notified === false) {
+                        usersId.push(alertPrice.user_id)
+                    }
                 }
             }
             pushNotification(usersId, coinPrice, "DOGE", "DOGEUSDT");
@@ -42,9 +48,16 @@ exports.AlertTasks = () => {
 
             for (const alertPrice of coinAlerts) {
                 console.log(`alert-price ${alertPrice.price}`)
-                if (coinPrice === alertPrice.price && alertPrice.notified === false) {
-                    usersId.push(alertPrice.user_id)
-                }
+
+                if (alertPrice.type === 'up') {
+                    if (coinPrice >= alertPrice.price && alertPrice.notified === false) {
+                        usersId.push(alertPrice.user_id)
+                    }
+                }else if(alertPrice.type === 'down'){
+                    if (coinPrice <= alertPrice.price && alertPrice.notified === false) {
+                        usersId.push(alertPrice.user_id)
+                    }
+
             }
             pushNotification(usersId, coinPrice, "BTC", "BTCUSDT");
         }
