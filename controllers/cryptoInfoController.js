@@ -5,13 +5,12 @@ const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 const {symbols, coinName} = require("../utils/constants");
 
-
 exports.coinSingle = asyncHandler(async ({body}, res) => {
 
     try {
         const {userId, coinTicker} = body
         const user = await User.findOne({firebase_uuid: userId});
-        const asset = await Asset.findOne({user_id: userId, ticker: coinTicker});
+        const asset = await Asset.find({user_id: userId, ticker: coinTicker});
         console.log(asset)
 
         const coinQuantity = asset.quantity
@@ -101,10 +100,9 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
 /**
  * @desc save the price Alert for coin
  * @route /api/crypto/alert
- * @param userID
+ * @param userId
  * @param coinTicker
  * @param price
- *
  * */
 exports.priceAlert = asyncHandler(async ({body}, res) => {
 
@@ -112,9 +110,7 @@ exports.priceAlert = asyncHandler(async ({body}, res) => {
 
     const {userId, coinTicker, price} = body
     try {
-        // const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinTicker}`);
-        // const coinJson = coinFetch.data;
-        // const coinPrice = coinJson.price;
+
         const name = coinName(coinTicker)
         await PriceAlert.create(
             {

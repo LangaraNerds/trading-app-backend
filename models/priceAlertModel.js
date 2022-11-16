@@ -19,6 +19,10 @@ const priceAlertSchema = new Schema(
         },
         type: {
             type: String,
+        },
+        notified: {
+            type: Boolean,
+            default: 0,
         }
     },
     {
