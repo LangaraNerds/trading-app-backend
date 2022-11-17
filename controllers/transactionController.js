@@ -4,6 +4,7 @@ const BuyHistory = require("../models/buyHistoryModel")
 const SellHistory = require("../models/sellHistoryModel")
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
+const {fetchPrice} = require("../utils/APIs");
 
 
 /**
@@ -22,9 +23,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
         const user = await User.findOne({firebase_uuid: userId});
         const asset = await Asset.findOne({user_id: userId, ticker: coinTicker});
 
-        const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinTicker}`);
-        const coinJson = coinFetch.data
-        const coinPrice = coinJson.price
+        const coinPrice = fetchPrice(coinTicker)
         const assetAmount = asset.quantity
 
         let balance = user.wallet.balance
@@ -58,7 +57,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
                     totalPrice: totalPrice
                 })
             }
-            // status 201 return amount and run for the hug
+            // status 201 return amount
             res.status(201).json({
                 success: true,
                 coinAmount: amount,
