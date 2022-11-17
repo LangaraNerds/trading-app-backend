@@ -2,8 +2,7 @@ const asyncHandler = require("express-async-handler");
 const {generateFromEmail} = require("unique-username-generator");
 // password encryption
 const User = require("../models/userModel");
-const Asset = require("../models/assetsModel");
-const {sendToken} = require("../utils/sendToken");
+
 
 require("../config/firebase-config");
 const {
@@ -17,6 +16,7 @@ const {getAuth: getAdminAuth} = require("firebase-admin/auth");
 // firebase admin
 const admin = require("firebase-admin");
 const credentials = require("../config/serviceAccountKey.json");
+const {seedAssets} = require("../utils/constants");
 
 
 admin.initializeApp({
@@ -119,55 +119,7 @@ const userSignup = asyncHandler(async (req, res) => {
  * This function takes in a user_id and creates a new asset for each of the 8 assets listed in the array
  * @param user_id - The user_id of the user you want to seed assets for.
  */
-async function seedAssets(user_id) {
-    try {
-        await Asset.insertMany([
-            {
-                name: "Bitcoin",
-                ticker: "BTCUSDT",
-                user_id: user_id
-            },
-            {
-                name: "Ethereum",
-                ticker: "ETHUSDT",
-                user_id: user_id
-            },
-            {
-                name: "Binance Coin",
-                ticker: "BNBUSDT",
-                user_id: user_id
-            },
-            {
-                name: "Ripple",
-                ticker: "XRPUSDT",
-                user_id: user_id
-            },
-            {
-                name: "Cardano",
-                ticker: "ADAUSDT",
-                user_id: user_id
-            },
-            {
-                name: "Solano",
-                ticker: "SOLUSDT",
-                user_id: user_id
-            },
-            {
-                name: "Dogecoin",
-                ticker: "DOGEUSDT",
-                user_id: user_id
-            },
-            {
-                name: "Tron",
-                ticker: "TRXUSDT",
-                user_id: user_id
-            },
 
-        ])
-    } catch (error) {
-        throw error
-    }
-}
 
 // @desc   Login a new user
 // @route  /api/users/login
