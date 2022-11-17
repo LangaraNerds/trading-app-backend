@@ -2,10 +2,11 @@ const asyncHandler = require("express-async-handler");
 const {Expo} = require('expo-server-sdk');
 const User = require("../models/userModel");
 const PriceAlert = require("../models/priceAlertModel");
-const {priceAlert} = require("../controllers/cryptoInfoController");
+const LimitOrder = require("../models/limitOrderModel");
 
 
-exports.pushNotification = asyncHandler(async (userTokens, coinPrice, coinName, coinTicker) => {
+exports.pushNotification = asyncHandler(async (usersId, coinPrice,
+                                               fetchPrice, notificationType, coinName, coinTicker, coinQuantity = 0) => {
     // const user = await User.find({firebase_uuid: userId}, {fcm_token: 1});
     // const token = user.fcm_token
 
@@ -13,13 +14,17 @@ exports.pushNotification = asyncHandler(async (userTokens, coinPrice, coinName, 
     // optionally providing an access token if you have enabled push security
     let expo = new Expo();
     //ExponentPushToken[ULYivqCKoSg1JqYVNjr_yb]
-
+    let userTokens = [];
 
     // for (const userId in usersId) {
     //     let userToken = await User.find({firebase_uuid: userId}, {fcm_token: 1})
     //     userTokens.push(userToken.fcm_token)
     // }
 
+    for (const user of usersId) {
+        const userToken = await User.findOne({firebase_uuid: user})
+        userTokens.push(userToken.fcm_token)
+    }
 
     // Create the messages that you want to send to clients
     let messages = [];
@@ -33,13 +38,22 @@ exports.pushNotification = asyncHandler(async (userTokens, coinPrice, coinName, 
             console.error(`Push token ${pushToken} is not a valid Expo push token`);
             continue;
         }
+        let message = ``
+        switch (notificationType) {
+            case notificationType = 'alert':
+                message = `The price of ${coinName} is at ${coinPrice}`
+                break;
+            case notificationType = 'buy':
+                message = `You just bought ${coinQuantity} of ${coinName} at the price of ${coinPrice} `
+                break;
+        }
 
         // Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
         messages.push({
             to: pushToken,
             sound: 'default',
             title: `${coinName}`,
-            body: 'Hello from backend',
+            body: message,
             data: {
                 price: coinPrice,
                 coinName: coinName,
@@ -47,12 +61,22 @@ exports.pushNotification = asyncHandler(async (userTokens, coinPrice, coinName, 
                 user: user.name
             },
         })
+        if (notificationType === 'alert') {
+            await PriceAlert.updateMany({price: fetchPrice, ticker: coinTicker, notified: false}, {
+                $set: {
+                    notified: true
+                }
+            })
+        }
+        if (notificationType === 'buy' || 'sell'){
+            await LimitOrder.updateMany({price:  fetchPrice, ticker: coinTicker,
+                typeOrder: notificationType, exec: false}, {
+                $set: {
+                    exec: true
+                }
+            })
+        }
 
-        await PriceAlert.updateMany({price: coinPrice, ticker: coinTicker, notified: false}, {
-            $set: {
-                notified: true
-            }
-        })
     }
 
 // The Expo push notification service accepts batches of notifications so

@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Asset = require("../models/assetsModel");
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
+const {fetchPrice} = require("../utils/APIs");
 
 
 /**
@@ -27,9 +28,8 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
         * change to the other api to do only one request
         * */
         for (const asset of assets) {
-            const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${asset.ticker}`);
-            const coinJson = coinFetch.data
-            const coinPrice = coinJson.price
+
+            const coinPrice = fetchPrice(asset.ticker)
             assetBalance = assetBalance + (asset.quantity * coinPrice)
             totalBalance = usdtBalance + assetBalance
         }

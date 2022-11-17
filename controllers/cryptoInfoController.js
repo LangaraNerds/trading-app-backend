@@ -4,6 +4,7 @@ const PriceAlert = require("../models/priceAlertModel");
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 const {symbols, coinName} = require("../utils/constants");
+const LimitOrder = require("../models/limitOrderModel");
 
 exports.coinSingle = asyncHandler(async ({body}, res) => {
 
@@ -36,8 +37,8 @@ exports.coinSingle = asyncHandler(async ({body}, res) => {
 /**
  @desc -put description here-
  @route /api/crypto/****
-* */
-exports.trendingCoins = asyncHandler( async (req, res) =>{
+ * */
+exports.trendingCoins = asyncHandler(async (req, res) => {
     try {
         const trending = await axios.get('https://api.binance.com/api/v3/ticker/24hr');
         const trendingCoins = trending.data;
@@ -62,7 +63,6 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
         ];
 
         listOfCoins.forEach((coins) => {
-
             // filter out coins that are not supported
             if (supportedSymbols.includes(coins.symbol)) {
                 let symbolAndCount = {
@@ -76,17 +76,12 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
         });
 
 
-
         let listSortedCoins = listCoinsWSV.sort((c1, c2) => (c1.count < c2.count) ? 1 : (c1.count > c2.count) ? -1 : 0);
 
-        //types of 'for`s' "for", "for...of", "for..in", "forEach"
 
         res.status(200).json({
             success: true,
             message: "Success",
-            // trendingCoins: trendingCoins,
-            // listOfCoins: listOfCoins
-            // listCoinsWSV: listCoinsWSV
             listSortedCoins: listSortedCoins
         })
 
@@ -103,12 +98,11 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
  * @param userId
  * @param coinTicker
  * @param price
+ * @param alertType (up, down)
  * */
 exports.priceAlert = asyncHandler(async ({body}, res) => {
 
-//firebase notification
-
-    const {userId, coinTicker, price} = body
+    const {userId, coinTicker, price, alertType} = body
     try {
 
         const name = coinName(coinTicker)
@@ -117,10 +111,10 @@ exports.priceAlert = asyncHandler(async ({body}, res) => {
                 price: price,
                 user_id: userId,
                 ticker: coinTicker,
-                name: name
+                name: name,
+                type: alertType
             }
         )
-        console.log(name)
         res.status(200).json({
             success: true,
             message: "Success",
@@ -130,4 +124,38 @@ exports.priceAlert = asyncHandler(async ({body}, res) => {
         res.status(500).json({success: false, message: e.message});
     }
 
-})
+});
+/**
+ * @desc save the price Alert for coin
+ * @route /api/crypto/order
+ * @param userId
+ * @param coinTicker
+ * @param price
+ * @param typeOrder (buy, sell)
+ * @param coinQuantity
+ * */
+exports.orderLimit = asyncHandler(async ({body}, res) => {
+
+    const {userId, coinTicker, price, typeOrder, coinQuantity} = body
+    try {
+
+        const name = coinName(coinTicker)
+        await LimitOrder.create(
+            {
+                price: price,
+                user_id: userId,
+                ticker: coinTicker,
+                name: name,
+                type: typeOrder,
+                quantity: coinQuantity
+            }
+        )
+        res.status(200).json({
+            success: true,
+            message: "Success",
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: e.message});
+    }
+
+});
