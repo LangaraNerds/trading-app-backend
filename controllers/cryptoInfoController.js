@@ -62,13 +62,16 @@ exports.trendingCoins = asyncHandler( async (req, res) =>{
         ];
 
         listOfCoins.forEach((coins) => {
-            let symbolAndCount = {
-                count: coins.count,
-                symbol: coins.symbol
+            // filter out coins that are not supported
+            if (supportedSymbols.includes(coins.symbol)) {
+                let symbolAndCount = {
+                    count: coins.count,
+                    symbol: coins.symbol,
+                    priceChangePercent: coins.priceChangePercent,
+                    lastPrice: coins.lastPrice,
+                }
+                listCoinsWSV.push(symbolAndCount)
             }
-            listCoinsWSV.push(symbolAndCount)
-
-
         });
 
 
