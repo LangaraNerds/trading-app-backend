@@ -85,7 +85,8 @@ const userSignup = asyncHandler(async (req, res) => {
         res.status(201).json({
             success: true,
             token: token,
-            userId: credential.user.uid,
+            user: user,
+            // userId: credential.user.uid,
             message: "Login success",
         });
     } catch (error) {
@@ -175,7 +176,6 @@ const userLogin = asyncHandler(async (req, res) => {
     let {email, password} = req.body;
 
     try {
-
         email = email.toLowerCase().trim();
         const credential = await signInWithEmailAndPassword(
             getAuth(),
