@@ -191,6 +191,7 @@ const userLogin = asyncHandler(async (req, res) => {
         res.status(200).json({
             success: true,
             token: token,
+            user: user,
             userId: credential.user.uid,
             fcm_token: user.fcm_token,
             message: "Login success",
