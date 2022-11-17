@@ -57,10 +57,10 @@ exports.OrderTasks = () => {
         const btcJob = new SimpleIntervalJob({seconds: 30}, buyBTC, {id: 'btc', preventOverrun: true,})
 
 
-        scheduler.addSimpleIntervalJob(dogeJob)
+       // scheduler.addSimpleIntervalJob(dogeJob)
         scheduler.addSimpleIntervalJob(btcJob)
 
-        console.log(scheduler.getById('doge').getStatus());
+        console.log(scheduler.getById('btc').getStatus());
 
     })
 }
