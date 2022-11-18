@@ -17,7 +17,7 @@ exports.AlertTasks = () => {
         let price = 0
         let usersId = []
         if (coinAlerts) {
-            const coinPrice = fetchPrice(coinTicker)
+            const coinPrice = await fetchPrice(coinTicker)
             console.log(`market-price: ${coinPrice}`)
 
             for (const alertPrice of coinAlerts) {
@@ -42,7 +42,7 @@ exports.AlertTasks = () => {
         let price = 0
         let usersId = []
         if (coinAlerts) {
-            const coinPrice = fetchPrice(coinTicker)
+            const coinPrice = await fetchPrice(coinTicker)
             console.log(`market-price: ${coinPrice}`)
 
             for (const alertPrice of coinAlerts) {

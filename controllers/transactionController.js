@@ -23,7 +23,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
         const user = await User.findOne({firebase_uuid: userId});
         const asset = await Asset.findOne({user_id: userId, ticker: coinTicker});
 
-        const coinPrice = fetchPrice(coinTicker)
+        const coinPrice = await fetchPrice(coinTicker)
         const assetAmount = asset.quantity
 
         let balance = user.wallet.balance
