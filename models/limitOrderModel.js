@@ -18,12 +18,11 @@ const limitOrderSchema = new Schema(
         },
         price: {
             type: Number,
-            required: [false, 'Please add the Quantity'],
         },
         typeOrder: {
             type: String,
         },
-        exec: {
+        status: {
             type: Boolean,
             default: false,
         }

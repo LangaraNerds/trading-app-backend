@@ -71,7 +71,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+
         res.status(500).json({success: false, message: error.message});
     }
 });
@@ -136,7 +136,7 @@ exports.sellCoin = asyncHandler(async ({body}, res) => {
             res.status(500).json({success: false, message: `something happened`});
         }
     } catch (error) {
-        console.log(error);
+
         res.status(500).json({success: false, message: error.message});
     }
 });

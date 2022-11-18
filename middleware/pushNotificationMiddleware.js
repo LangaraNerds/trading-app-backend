@@ -72,11 +72,13 @@ exports.pushNotification = asyncHandler(async (usersId, coinPrice,
                 }
             })
         }
-        if (notificationType === 'buy' || 'sell'){
-            await LimitOrder.updateMany({price:  fetchPrice, ticker: coinTicker,
-                typeOrder: notificationType, exec: false}, {
+        if (notificationType === 'buy' || 'sell') {
+            await LimitOrder.updateMany({
+                price: fetchPrice, ticker: coinTicker,
+                typeOrder: notificationType, status: false
+            }, {
                 $set: {
-                    exec: true
+                    status: true
                 }
             })
         }

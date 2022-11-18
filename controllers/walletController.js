@@ -15,7 +15,7 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
     // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"
     try {
         const user = await User.findOne({firebase_uuid: userId});
-        console.log(user)
+
 
         const assets = await Asset.find({user_id: userId});
 
@@ -38,7 +38,7 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
             message: "Success",
         });
     } catch (error) {
-        console.log(error);
+
         res.status(500).json({success: false, message: error.message});
     }
 
@@ -55,7 +55,7 @@ exports.walletAssets = asyncHandler(async ({body}, res) => {
     // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"
     try {
         const user = await User.findOne({firebase_uuid: userId});
-        console.log(user)
+
 
         const assets = await Asset.find({user_id: userId});
 
@@ -84,7 +84,7 @@ exports.walletAssets = asyncHandler(async ({body}, res) => {
             message: "Success",
         });
     } catch (error) {
-        console.log(error);
+
         res.status(500).json({success: false, message: error.message});
     }
 
