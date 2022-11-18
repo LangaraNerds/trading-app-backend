@@ -32,7 +32,7 @@ const userSchema = new Schema(
         },
         fcm_token: {
             type: String,
-            required: [true, "Please add an fcm_token"],
+            required: [false, "Please add an fcm_token"],
             unique: true,
         },
         wallet: {
