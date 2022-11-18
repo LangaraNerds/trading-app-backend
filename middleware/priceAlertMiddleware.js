@@ -10,7 +10,7 @@ exports.AlertTasks = () => {
     const scheduler = new ToadScheduler()
 
     const dogeAlert = new Task('DOGEUSDT Alert', async () => {
-        console.log('dogeAlert');
+
         const coinTicker = 'DOGEUSDT';
         const name = coinName(coinTicker)
         const coinAlerts = await PriceAlert.find({ticker: coinTicker});
@@ -18,11 +18,11 @@ exports.AlertTasks = () => {
         let usersId = []
         if (coinAlerts) {
             const coinPrice = await fetchPrice(coinTicker)
-            console.log(`market-price: ${coinPrice}`)
+
 
             for (const alertPrice of coinAlerts) {
                 price = alertPrice.price
-                console.log(`alert-price ${alertPrice.price}`)
+
                 if (alertPrice.type === 'up' && coinPrice >= alertPrice.price && alertPrice.notified === false) {
                     usersId.push(alertPrice.user_id)
                 } else if (alertPrice.type === 'down' && coinPrice <= alertPrice.price && alertPrice.notified === false) {
@@ -34,7 +34,7 @@ exports.AlertTasks = () => {
     })
 
     const btcAlert = new Task('BTCUSDT Alert', async () => {
-        console.log('btcAlert');
+
 
         const coinTicker = 'BTCUSDT';
         const name = coinName(coinTicker)

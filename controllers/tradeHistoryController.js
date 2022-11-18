@@ -35,7 +35,7 @@ exports.tradeHistory = asyncHandler(async ({body}, res) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
 
-        console.log("tradeInfo",tradeInfo)
+
         res.status(200).json({
             success: true,
             tradeInfo: tradeInfo,

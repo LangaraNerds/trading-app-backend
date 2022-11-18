@@ -104,8 +104,6 @@ exports.sellTransaction = async (coinTicker, coinQuantity, user_id) => {
         const coinPrice = await fetchPrice(coinTicker);
         const assetAmount = asset.quantity
 
-
-
         let assetQuantity = asset.quantity;
         let balance = user.wallet.balance;
 
