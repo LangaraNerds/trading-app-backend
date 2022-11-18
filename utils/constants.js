@@ -55,7 +55,7 @@ exports.buyTransaction = async (coinTicker, coinQuantity, user_id) => {
 
         const user = await User.findOne({firebase_uuid: user_id});
         const asset = await Asset.findOne({user_id: user_id, ticker: coinTicker});
-        const coinPrice = fetchPrice(coinTicker);
+        const coinPrice = await fetchPrice(coinTicker);
         const assetAmount = asset.quantity
 
         let balance = user.wallet.balance

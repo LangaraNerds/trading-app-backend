@@ -16,7 +16,7 @@ exports.OrderTasks = () => {
         const name = coinName(coinTicker)
         let usersId = []
         if (orderLimit) {
-            const coinPrice = fetchPrice(coinTicker)
+            const coinPrice = await fetchPrice(coinTicker)
             console.log(`market-price: ${coinPrice}`)
 
             for (const order of orderLimit) {
