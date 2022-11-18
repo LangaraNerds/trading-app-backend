@@ -6,7 +6,8 @@ const LimitOrder = require("../models/limitOrderModel");
 
 
 exports.pushNotification = asyncHandler(async (usersId, coinPrice,
-                                               fetchPrice, notificationType, coinName, coinTicker, coinQuantity = 0) => {
+                                               fetchPrice, notificationType, coinName,
+                                               coinTicker, coinQuantity = 0) => {
     // const user = await User.find({firebase_uuid: userId}, {fcm_token: 1});
     // const token = user.fcm_token
 
@@ -44,7 +45,10 @@ exports.pushNotification = asyncHandler(async (usersId, coinPrice,
                 message = `The price of ${coinName} is at ${coinPrice}`
                 break;
             case notificationType = 'buy':
-                message = `You just bought ${coinQuantity} of ${coinName} at the price of ${coinPrice} `
+                message = `You just bought ${coinName} at the price of ${coinPrice} `
+                break;
+            case notificationType = 'sell':
+                message = `You just sold ${coinName} at the price of ${coinPrice} `
                 break;
         }
 
@@ -68,11 +72,13 @@ exports.pushNotification = asyncHandler(async (usersId, coinPrice,
                 }
             })
         }
-        if (notificationType === 'buy' || 'sell'){
-            await LimitOrder.updateMany({price:  fetchPrice, ticker: coinTicker,
-                typeOrder: notificationType, exec: false}, {
+        if (notificationType === 'buy' || 'sell') {
+            await LimitOrder.updateMany({
+                price: fetchPrice, ticker: coinTicker,
+                typeOrder: notificationType, status: false
+            }, {
                 $set: {
-                    exec: true
+                    status: true
                 }
             })
         }

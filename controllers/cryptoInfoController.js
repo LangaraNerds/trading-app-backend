@@ -12,7 +12,7 @@ exports.coinSingle = asyncHandler(async ({body}, res) => {
         const {userId, coinTicker} = body
         const user = await User.findOne({firebase_uuid: userId});
         const asset = await Asset.find({user_id: userId, ticker: coinTicker});
-        console.log(asset)
+
 
         const coinQuantity = asset.quantity
         const balance = user.wallet.balance
@@ -47,7 +47,7 @@ exports.trendingCoins = asyncHandler(async (req, res) => {
         let listCoinsWSV = [];
 
         for (let i = 0; i < symbols.length; i++) {
-            // console.log(symbols[i]);
+
             listOfCoins.push(trendingCoins.find(item => item.symbol === symbols[i]));
         }
 
@@ -146,7 +146,7 @@ exports.orderLimit = asyncHandler(async ({body}, res) => {
                 user_id: userId,
                 ticker: coinTicker,
                 name: name,
-                type: typeOrder,
+                typeOrder: typeOrder,
                 quantity: coinQuantity
             }
         )

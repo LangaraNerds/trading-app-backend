@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Asset = require("../models/assetsModel");
 const {fetchPrice} = require("./APIs");
 const BuyHistory = require("../models/buyHistoryModel");
+const SellHistory = require("../models/sellHistoryModel");
 
 
 exports.symbols = [
@@ -80,6 +81,51 @@ exports.buyTransaction = async (coinTicker, coinQuantity, user_id) => {
                     }
                 })
                 await BuyHistory.create({
+                    user_id: user_id,
+                    ticker: coinTicker,
+                    quantity: coinQuantity,
+                    price: coinPrice,
+                    totalPrice: totalPrice
+                })
+            }
+
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+
+exports.sellTransaction = async (coinTicker, coinQuantity, user_id) => {
+    try {
+
+        const user = await User.findOne({firebase_uuid: user_id});
+        const asset = await Asset.findOne({user_id: user_id, ticker: coinTicker});
+        const coinPrice = await fetchPrice(coinTicker);
+        const assetAmount = asset.quantity
+
+        let assetQuantity = asset.quantity;
+        let balance = user.wallet.balance;
+
+        balance = balance + (coinQuantity * coinPrice);
+        const totalPrice = coinQuantity * coinPrice;
+        if (assetQuantity >= coinQuantity) {
+            const updateBalance = await User.updateOne({_id: user.id}, {
+                $set: {
+                    "wallet.balance": balance,
+                }
+            })
+
+            if (updateBalance) {
+                assetQuantity = assetQuantity - coinQuantity
+                await Asset.updateOne({_id: asset.id},
+                    {
+                        $set: {
+                            quantity: assetQuantity
+                        }
+                    }
+                )
+                await SellHistory.create({
                     user_id: user_id,
                     ticker: coinTicker,
                     quantity: coinQuantity,

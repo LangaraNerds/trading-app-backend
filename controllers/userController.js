@@ -74,7 +74,7 @@ const userSignup = asyncHandler(async (req, res) => {
             },
         })
 
-        console.log(credential.user.uid)
+
         if (user) {
             await seedAssets(credential.user.uid)
         }
@@ -111,7 +111,7 @@ const userSignup = asyncHandler(async (req, res) => {
                 });
                 break;
         }
-        console.log("Signup Error", error);
+
     }
 });
 
@@ -170,7 +170,7 @@ const userLogin = asyncHandler(async (req, res) => {
                 break;
         }
 
-        console.log("Login Error", error.code);
+
     }
 });
 
@@ -211,7 +211,7 @@ const userProfile = asyncHandler(async (req, res) => {
         // if (userId !== req.token.uid) {
         //     res.status(403).json({ success: false, error: { code: 'unauthorized' } });
         // }
-        // console.log("success", req);
+
         // const user = await User.findById(req.params.id)
 
         res.status(201).json({
