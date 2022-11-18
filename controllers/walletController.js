@@ -23,13 +23,10 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
         let totalBalance = 0
         let assetBalance = 0
 
-        /*https://www.binance.me/api/v3/ticker/price?symbols=%5B"ETHUSDT","BTCUSDT","XRPUSDT"%5D
-        * To do
-        * change to the other api to do only one request
-        * */
+
         for (const asset of assets) {
 
-            const coinPrice = fetchPrice(asset.ticker)
+            const coinPrice = await fetchPrice(asset.ticker)
             assetBalance = assetBalance + (asset.quantity * coinPrice)
             totalBalance = usdtBalance + assetBalance
         }
