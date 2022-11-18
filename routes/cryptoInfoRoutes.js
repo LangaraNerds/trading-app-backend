@@ -7,7 +7,7 @@ module.exports = function (app) {
     router.post("/", coinSingle);
     router.get("/trending", trendingCoins);
     router.post("/alert", priceAlert);
-    router.post("/order ", orderLimit);
+    router.post("/order", orderLimit);
 
     app.use('/api/crypto', router)
 }
