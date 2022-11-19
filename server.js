@@ -5,9 +5,10 @@ const app = express();
 const cookieParser = require('cookie-parser')
 const colors = require("colors");
 const morgan = require("morgan");
-const {AlertTasks, stopTasks} = require("./middleware/priceAlertMiddleware");
+const {AlertTasks} = require("./middleware/priceAlertMiddleware");
 const {errorHandler} = require("./middleware/errorMiddleware");
 const connectDB = require("./database/connection");
+const {OrderTasks} = require("./middleware/limitOrderMiddleware");
 
 const PORT = process.env.PORT || 8080;
 
@@ -24,11 +25,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
-/* Listening to the port that is set in the environment. */
+/00-0* Listening to the port that is set in the environment. */
 app.listen(PORT, () => console.log(`listening to ${PORT}`));
 
 // HTTP request logger
 app.use(morgan("dev"));
+
 
 // Routes
 require('./routes')(app);
@@ -38,5 +40,7 @@ app.get("/", (req, res) => {
     res.json({message: "Welcome to Team Psyduck API."});
 });
 
+AlertTasks();
+OrderTasks();
 
 app.use(errorHandler);
