@@ -193,3 +193,30 @@ exports.alertsInfo = asyncHandler(async ({body}, res) => {
     }
 
 });
+
+/**
+ * @desc get all the order history
+ * @route /api/order/history
+ * @param userId
+ * */
+exports.orderHistory = asyncHandler(async ({body}, res) => {
+    try {
+        const {userId} = body
+
+        const data = {
+            _id: 0,
+            __v: 0
+        }
+
+        const orderHistory = await LimitOrder.find({user_id: userId}, data);
+
+        res.status(200).json({
+            orderHistory: orderHistory,
+            success: true,
+            message: "Success",
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: e.message});
+    }
+
+});
