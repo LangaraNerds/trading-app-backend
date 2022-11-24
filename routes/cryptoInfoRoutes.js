@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {coinSingle, trendingCoins, priceAlert, orderLimit, alertsInfo, orderHistory} = require("../controllers/cryptoInfoController");
+const {coinSingle, trendingCoins, priceAlert, orderLimit, alertsInfo, orderHistory, ordersActives} = require("../controllers/cryptoInfoController");
 
 const {isAuthenticated} = require('../middleware/authMiddleware');
 module.exports = function (app) {
@@ -10,6 +10,7 @@ module.exports = function (app) {
     router.post("/alert/info", alertsInfo);
     router.post("/order", orderLimit);
     router.post("/order/history", orderHistory);
+    router.post("/order/active", ordersActives);
 
     app.use('/api/crypto', router)
 }
