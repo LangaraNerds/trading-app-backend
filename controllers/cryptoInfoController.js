@@ -6,6 +6,13 @@ const axios = require("axios");
 const {symbols, coinName} = require("../utils/constants");
 const LimitOrder = require("../models/limitOrderModel");
 
+
+/**
+ * @desc save the price Alert for coin
+ * @route /api/crypto/
+ * @param userId
+ * @param coinTicker
+ * */
 exports.coinSingle = asyncHandler(async ({body}, res) => {
 
     try {
@@ -151,6 +158,87 @@ exports.orderLimit = asyncHandler(async ({body}, res) => {
             }
         )
         res.status(200).json({
+            success: true,
+            message: "Success",
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: e.message});
+    }
+
+});
+
+/**
+ * @desc get all the alerts
+ * @route /api/alerts
+ * @param userId
+ * */
+exports.alertsInfo = asyncHandler(async ({body}, res) => {
+    try {
+        const {userId} = body
+
+        const data = {
+            _id: 0,
+            __v: 0
+        }
+
+        const alertInfo = await PriceAlert.find({user_id: userId}, data);
+
+        res.status(200).json({
+            alertsInfo: alertInfo,
+            success: true,
+            message: "Success",
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: e.message});
+    }
+
+});
+
+/**
+ * @desc get all the order history
+ * @route /api/order/history
+ * @param userId
+ * */
+exports.orderHistory = asyncHandler(async ({body}, res) => {
+    try {
+        const {userId} = body
+
+        const data = {
+            _id: 0,
+            __v: 0
+        }
+
+        const orderHistory = await LimitOrder.find({user_id: userId}, data);
+
+        res.status(200).json({
+            orderHistory: orderHistory,
+            success: true,
+            message: "Success",
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: e.message});
+    }
+
+});
+
+/**
+ * @desc get all the order history
+ * @route /api/order/actives
+ * @param userId
+ * */
+exports.ordersActives = asyncHandler(async ({body}, res) => {
+    try {
+        const {userId} = body
+
+        const data = {
+            _id: 0,
+            __v: 0
+        }
+
+        const ordersActives = await LimitOrder.find({user_id: userId, status: false}, data);
+
+        res.status(200).json({
+            ordersActives: ordersActives,
             success: true,
             message: "Success",
         });
