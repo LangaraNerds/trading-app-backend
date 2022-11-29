@@ -255,10 +255,32 @@ const userFCMToken = asyncHandler(async ({body}, res) => {
         res.status(500).json({success: false, message: error.message});
     }
 });
+
+// @desc   Stop user tutorial
+// @route  /api/users/tutorial
+// @access Private
+// @param  userId
+const skipTutorial = asyncHandler(async (req, res) => {
+    try {
+        const {userId} = req.body;
+        const user = await User.findOneAndUpdate({firebase_uuid: userId}, {isTutorial: false});
+
+        res.status(201).json({
+            success: true,
+            user: user,
+            message: `User tutorial request success for ${user.email}`,
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message});
+    }
+});
+
+
 module.exports = {
     userSignup,
     userLogin,
     userLogout,
     userProfile,
-    userFCMToken
+    userFCMToken,
+    skipTutorial
 };

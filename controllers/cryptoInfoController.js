@@ -8,7 +8,7 @@ const LimitOrder = require("../models/limitOrderModel");
 
 
 /**
- * @desc Give the information of the Ticker in Assets
+ * @desc Show the info for the specific coin
  * @route /api/crypto/
  * @param userId
  * @param coinTicker
@@ -18,7 +18,7 @@ exports.coinSingle = asyncHandler(async ({body}, res) => {
     try {
         const {userId, coinTicker} = body
         const user = await User.findOne({firebase_uuid: userId});
-        const asset = await Asset.find({user_id: userId, ticker: coinTicker});
+        const asset = await Asset.findOne({user_id: userId, ticker: coinTicker});
 
 
         const coinQuantity = asset.quantity
