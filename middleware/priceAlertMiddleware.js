@@ -35,13 +35,13 @@ exports.AlertTasks = () => {
         }
     })
 
-    const alertJob = new SimpleIntervalJob({seconds: 30,}, priceAlert, {id: 'btc', preventOverrun: true,})
+    const alertJob = new SimpleIntervalJob({seconds: 30,}, priceAlert, {id: 'priceAlert', preventOverrun: true,})
 
 
-    scheduler.addSimpleIntervalJob(btcJob)
+    scheduler.addSimpleIntervalJob(alertJob)
 
 
-    console.log(scheduler.getById('btc').getStatus());
+    console.log(scheduler.getById('priceAlert').getStatus());
 
 }
 exports.stopTasks = () => {
