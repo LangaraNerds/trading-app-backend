@@ -51,9 +51,7 @@ exports.OrderTasks = () => {
                 }
                 if (usersId !== '') {
                     pushNotification(usersId, coinPrice, price, 'sell', name, coinTicker);
-
                 }
-
             }
         }
     })

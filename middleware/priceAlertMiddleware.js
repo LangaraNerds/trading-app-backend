@@ -31,7 +31,6 @@ exports.AlertTasks = () => {
                     }
                 }
                 pushNotification(usersId, coinPrice, price, 'alert', name, coinTicker);
-
             }
         }
     })
