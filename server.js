@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
-/00-0* Listening to the port that is set in the environment. */
+/* Listening to the port that is set in the environment. */
 app.listen(PORT, () => console.log(`listening to ${PORT}`));
 
 // HTTP request logger

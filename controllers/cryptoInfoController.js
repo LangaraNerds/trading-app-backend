@@ -8,7 +8,7 @@ const LimitOrder = require("../models/limitOrderModel");
 
 
 /**
- * @desc save the price Alert for coin
+ * @desc Give the information of the Ticker in Assets
  * @route /api/crypto/
  * @param userId
  * @param coinTicker
