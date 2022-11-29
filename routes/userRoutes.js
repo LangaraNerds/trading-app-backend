@@ -8,7 +8,7 @@ module.exports = function (app) {
     router.post("/login", userLogin);
     router.post("/logout", userLogout);
     router.post("/user/token", userFCMToken);
-    router.post("/tutorial", skipTutorial);
+    router.post("/user/tutorial", skipTutorial);
     router.get("/me", isAuthenticated, userProfile);
     app.use('/api', router)
 }

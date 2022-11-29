@@ -262,8 +262,7 @@ const userFCMToken = asyncHandler(async ({body}, res) => {
 // @param  userId
 const skipTutorial = asyncHandler(async (req, res) => {
     try {
-        const userId = req.params.id;
-
+        const {userId} = req.body;
         const user = await User.findOneAndUpdate({firebase_uuid: userId}, {isTutorial: false});
 
         res.status(201).json({
