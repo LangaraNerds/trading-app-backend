@@ -4,42 +4,39 @@ const {pushNotification} = require('./pushNotificationMiddleware');
 const {fetchPrice} = require("../utils/APIs");
 const {coinName, symbols} = require("../utils/constants");
 
-
 exports.AlertTasks = () => {
 
     const scheduler = new ToadScheduler()
-
 
     const priceAlert = new Task('Price Alert', async () => {
 
         for (const coinTicker of symbols) {
             const name = coinName(coinTicker)
-            const coinAlerts = await PriceAlert.find({ticker: coinTicker});
+            const coinAlerts = await PriceAlert.find({ticker: coinTicker, notified: 0});
             let price = 0
             let usersId = []
+
             if (coinAlerts) {
                 const coinPrice = await fetchPrice(coinTicker)
-                console.log(`market-price: ${coinPrice}`)
-
                 for (const alertPrice of coinAlerts) {
-                    console.log(`alert-price ${alertPrice.price}`)
+
+
+
                     price = alertPrice.price
-                    if (alertPrice.type === 'up' && coinPrice >= alertPrice.price && alertPrice.notified === false) {
+                    if (alertPrice.type === 'up' && coinPrice >= alertPrice.price && alertPrice.notified === 0) {
                         usersId.push(alertPrice.user_id)
                     } else if (alertPrice.type === 'down' && coinPrice <= alertPrice.price && alertPrice.notified === false) {
                         usersId.push(alertPrice.user_id)
                     }
                 }
-                pushNotification(usersId, coinPrice, price, 'alert', name, coinTicker);
+               await pushNotification(usersId, coinPrice, price, 'alert', name, coinTicker);
             }
         }
     })
 
     const alertJob = new SimpleIntervalJob({seconds: 30,}, priceAlert, {id: 'priceAlert', preventOverrun: true,})
 
-
     scheduler.addSimpleIntervalJob(alertJob)
-
 
     console.log(scheduler.getById('priceAlert').getStatus());
 

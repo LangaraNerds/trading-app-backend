@@ -4,13 +4,13 @@ const LimitOrder = require("../models/limitOrderModel");
 const {fetchPrice} = require("../utils/APIs");
 const {buyTransaction, coinName, sellTransaction, symbols} = require("../utils/constants");
 
-
 exports.OrderTasks = () => {
-    const scheduler = new ToadScheduler()
 
-    const buyBTC = new Task('buy order', async () => {
+    const scheduler = new ToadScheduler()
+    const buyOrder = new Task('Buy Order', async () => {
         for (const coinTicker of symbols) {
-            const orderLimit = await LimitOrder.find({ticker: coinTicker});
+
+            const orderLimit = await LimitOrder.find({ticker: coinTicker, status: 0});
             let price = 0
             const name = coinName(coinTicker)
             let usersId = []
@@ -18,6 +18,7 @@ exports.OrderTasks = () => {
                 const coinPrice = await fetchPrice(coinTicker)
 
                 for (const order of orderLimit) {
+
                     if (order.typeOrder === 'buy' && coinPrice <= order.price && !order.status) {
 
                         price = order.price
@@ -32,15 +33,14 @@ exports.OrderTasks = () => {
         }
     })
 
-    const sellBTC = new Task('BTCUSDT Alert', async () => {
+    const sellOrder = new Task('Sell Order', async () => {
         for (const coinTicker of symbols) {
-            const orderLimit = await LimitOrder.find({ticker: coinTicker});
+            const orderLimit = await LimitOrder.find({ticker: coinTicker, status: 0});
             let price = 0
             const name = coinName(coinTicker)
             let usersId = []
             if (orderLimit) {
                 const coinPrice = await fetchPrice(coinTicker)
-
 
                 for (const order of orderLimit) {
                     if (order.typeOrder === 'sell' && coinPrice >= order.price && !order.status) {
@@ -56,13 +56,11 @@ exports.OrderTasks = () => {
         }
     })
 
-    const btcSellJob = new SimpleIntervalJob({seconds: 30}, sellBTC, {id: 'sell', preventOverrun: true,})
-    const btcBuyJob = new SimpleIntervalJob({seconds: 30}, buyBTC, {id: 'buy', preventOverrun: true,})
+    const SellJob = new SimpleIntervalJob({seconds: 10}, sellOrder, {id: 'sell', preventOverrun: true,})
+    const BuyJob = new SimpleIntervalJob({seconds: 10}, buyOrder, {id: 'buy', preventOverrun: true,})
 
-
-    scheduler.addSimpleIntervalJob(btcSellJob)
-    scheduler.addSimpleIntervalJob(btcBuyJob)
-
+    scheduler.addSimpleIntervalJob(SellJob)
+    scheduler.addSimpleIntervalJob(BuyJob)
 
     console.log(scheduler.getById('buy').getStatus());
     console.log(scheduler.getById('sell').getStatus());
