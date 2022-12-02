@@ -169,7 +169,7 @@ exports.orderLimit = asyncHandler(async ({body}, res) => {
 
 /**
  * @desc get all the alerts
- * @route /api/alerts
+ * @route /api/crypto/alerts
  * @param userId
  * */
 exports.alertsInfo = asyncHandler(async ({body}, res) => {
@@ -223,7 +223,7 @@ exports.orderHistory = asyncHandler(async ({body}, res) => {
 
 /**
  * @desc get all the order history
- * @route /api/order/actives
+ * @route /api/crypto/order/actives
  * @param userId
  * */
 exports.ordersActives = asyncHandler(async ({body}, res) => {
