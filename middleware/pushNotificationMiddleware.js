@@ -24,6 +24,7 @@ exports.pushNotification = asyncHandler(async (usersId, coinPrice,
 
     for (const user of usersId) {
         const userToken = await User.findOne({firebase_uuid: user})
+
         userTokens.push(userToken.fcm_token)
     }
 
@@ -32,7 +33,7 @@ exports.pushNotification = asyncHandler(async (usersId, coinPrice,
     for (let pushToken of userTokens) {
         // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
 
-        const user = User.findOne({fcm_token: pushToken}, {fcm_token: 1});
+        const user = await User.findOne({fcm_token: pushToken}, {fcm_token: 1});
 
         // Check that all your push tokens appear to be valid Expo push tokens
         if (!Expo.isExpoPushToken(pushToken)) {
@@ -65,20 +66,25 @@ exports.pushNotification = asyncHandler(async (usersId, coinPrice,
                 user: user.name
             },
         })
+        const date = new Date();
         if (notificationType === 'alert') {
-            await PriceAlert.updateMany({price: fetchPrice, ticker: coinTicker, notified: false}, {
+
+            await PriceAlert.updateMany({price: fetchPrice, ticker: coinTicker, notified: 0}, {
                 $set: {
-                    notified: true
+                    notified: 1,
+                    updatedAt: date
                 }
             })
         }
-        if (notificationType === 'buy' || 'sell') {
+        if (notificationType === 'buy' || notificationType === 'sell') {
+
             await LimitOrder.updateMany({
                 price: fetchPrice, ticker: coinTicker,
-                typeOrder: notificationType, status: false
+                typeOrder: notificationType, status: 0
             }, {
                 $set: {
-                    status: true
+                    status: 1,
+                    updatedAt: date
                 }
             })
         }
