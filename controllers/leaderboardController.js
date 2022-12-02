@@ -14,7 +14,7 @@ const axios = require("axios");
  * @param userId
 * */
 exports.topTraders = asyncHandler(async ({body}, res) => {
-    const { city } = body
+    const { userId, city } = body
     try { 
 
         // console.log("City", city)
