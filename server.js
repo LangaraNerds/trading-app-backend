@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
     res.json({message: "Welcome to Team Psyduck API."});
 });
 
-AlertTasks();
-OrderTasks();
+// AlertTasks();
+// OrderTasks();
 
 app.use(errorHandler);

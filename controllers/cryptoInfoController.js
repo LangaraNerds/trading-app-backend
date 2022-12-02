@@ -196,7 +196,7 @@ exports.alertsInfo = asyncHandler(async ({body}, res) => {
 
 /**
  * @desc get all the order history
- * @route /api/order/history
+ * @route /api/crypto/order/history
  * @param userId
  * */
 exports.orderHistory = asyncHandler(async ({body}, res) => {
