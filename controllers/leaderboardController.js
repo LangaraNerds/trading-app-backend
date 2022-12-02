@@ -79,7 +79,7 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
                 performance = ((parseFloat(totalBalance) - 1000) / 1000 * 100) / totalTrades
     
                 topArr.push({
-                    email: doc.email,
+                    username: doc.username,
                     performance: performance
                 })
             }
