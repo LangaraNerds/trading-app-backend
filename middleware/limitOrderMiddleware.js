@@ -56,8 +56,8 @@ exports.OrderTasks = () => {
         }
     })
 
-    const SellJob = new SimpleIntervalJob({seconds: 10}, sellOrder, {id: 'sell', preventOverrun: true,})
-    const BuyJob = new SimpleIntervalJob({seconds: 10}, buyOrder, {id: 'buy', preventOverrun: true,})
+    const SellJob = new SimpleIntervalJob({seconds: 30}, sellOrder, {id: 'sell', preventOverrun: true,})
+    const BuyJob = new SimpleIntervalJob({seconds: 30}, buyOrder, {id: 'buy', preventOverrun: true,})
 
     scheduler.addSimpleIntervalJob(SellJob)
     scheduler.addSimpleIntervalJob(BuyJob)
