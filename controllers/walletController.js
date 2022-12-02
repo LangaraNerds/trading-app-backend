@@ -25,11 +25,12 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
 
 
         for (const asset of assets) {
-
             const coinPrice = await fetchPrice(asset.ticker)
             assetBalance = assetBalance + (asset.quantity * coinPrice)
             totalBalance = usdtBalance + assetBalance
         }
+
+
         res.status(201).json({
             success: true,
             usdtBalance: usdtBalance,
