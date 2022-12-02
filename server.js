@@ -12,13 +12,13 @@ const {OrderTasks} = require("./middleware/limitOrderMiddleware");
 
 const PORT = process.env.PORT || 8080;
 
-
 // Connect to database
 connectDB();
 /* This is a middleware that allows the server to accept requests from a different origin. */
 const corsOptions = {
     origin: "*"
 };
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -31,16 +31,14 @@ app.listen(PORT, () => console.log(`listening to ${PORT}`));
 // HTTP request logger
 app.use(morgan("dev"));
 
-
 // Routes
 require('./routes')(app);
-
 
 app.get("/", (req, res) => {
     res.json({message: "Welcome to Team Psyduck API."});
 });
 
-// AlertTasks();
-// OrderTasks();
+AlertTasks();
+OrderTasks();
 
 app.use(errorHandler);
