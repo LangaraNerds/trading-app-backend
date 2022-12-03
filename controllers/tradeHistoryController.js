@@ -50,7 +50,7 @@ exports.tradeHistory = asyncHandler(async ({body}, res) => {
 });
 /**
  * @desc  get total quantities of trade
- * @route /api/wallet/quantity
+ * @route /api/wallet/trade/quantity
  * @param userId
  * */
 exports.tradeQuantity = asyncHandler(async ({body}, res) => {
