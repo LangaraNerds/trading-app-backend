@@ -23,9 +23,10 @@ exports.AlertTasks = () => {
 
 
                     price = alertPrice.price
-                    if (alertPrice.type === 'up' && coinPrice >= alertPrice.price && alertPrice.notified === 0) {
+                    if (alertPrice.type === 'up' && coinPrice >= alertPrice.price && !alertPrice.notified) {
                         usersId.push(alertPrice.user_id)
-                    } else if (alertPrice.type === 'down' && coinPrice <= alertPrice.price && alertPrice.notified === false) {
+                        console.log(alertPrice.user_id)
+                    } else if (alertPrice.type === 'down' && coinPrice <= alertPrice.price && !alertPrice.notified) {
                         usersId.push(alertPrice.user_id)
                     }
                 }
