@@ -9,6 +9,5 @@ module.exports = function (app) {
     router.post("/", userWallet);
     router.post("/assets", walletAssets);
     router.post("/history", tradeHistory);
-    router.post("/trade/quantity", tradeQuantity);
     app.use('/api/wallet', router)
 }

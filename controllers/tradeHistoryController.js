@@ -48,30 +48,3 @@ exports.tradeHistory = asyncHandler(async ({body}, res) => {
         res.status(500).json({success: false, message: error.message});
     }
 });
-/**
- * @desc  get total quantities of trade
- * @route /api/wallet/trade/quantity
- * @param userId
- * */
-exports.tradeQuantity = asyncHandler(async ({body}, res) => {
-    try {
-        const {userId} = body
-
-        // instead of 2 count it should be done with an aggregation for better performance
-
-        const BuyQuantity = await BuyHistory.count({user_id: userId})
-        const SellQuantity = await SellHistory.count({user_id: userId})
-
-        const totalQuantity = BuyQuantity + SellQuantity
-
-        res.status(200).json({
-            success: true,
-            totalQuantity: totalQuantity,
-            message: "Success",
-
-        });
-
-    } catch (error) {
-        res.status(500).json({success: false, message: error.message});
-    }
-});
