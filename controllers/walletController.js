@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const BuyHistory = require("../models/buyHistoryModel")
+const SellHistory = require("../models/sellHistoryModel")
 const Asset = require("../models/assetsModel");
 const asyncHandler = require("express-async-handler");
 const axios = require("axios");
@@ -12,10 +14,15 @@ const {fetchPrice} = require("../utils/APIs");
 * */
 exports.userWallet = asyncHandler(async ({body}, res) => {
     const {userId} = body
-    // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"
-    try {
-        const user = await User.findOne({firebase_uuid: userId});
 
+    try {
+        const user = await User.findOne({firebase_uuid: userId})
+
+        // instead of 2 count it should be done with an aggregation for better performance
+        const BuyQuantity = await BuyHistory.count({user_id: userId})
+        const SellQuantity = await SellHistory.count({user_id: userId})
+
+        const totalQuantity = BuyQuantity + SellQuantity
 
         const assets = await Asset.find({user_id: userId});
 
@@ -23,19 +30,18 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
         let totalBalance = 0
         let assetBalance = 0
 
-
         for (const asset of assets) {
             const coinPrice = await fetchPrice(asset.ticker)
             assetBalance = assetBalance + (asset.quantity * coinPrice)
             totalBalance = usdtBalance + assetBalance
         }
 
-
         res.status(201).json({
             success: true,
             usdtBalance: usdtBalance,
             assetsBalance: assetBalance,
             totalBalance: totalBalance,
+            totalQuantity: totalQuantity,
             message: "Success",
         });
     } catch (error) {
