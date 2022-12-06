@@ -96,6 +96,12 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
         // slice the array to get top 10
         topArr = topArr.slice(0, 10)
 
+        // add rank to each user
+        var rank = 1;
+        for (var i = 0; i < topArr.length; i++) {
+            topArr[i].rank = rank;
+            rank++;
+        }
 
         res.status(200).json({ success: true, rank: userRank, traders: topArr, message: "Success! Here are the Top 10 users" });
     } catch (error) {
