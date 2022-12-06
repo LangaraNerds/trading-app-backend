@@ -17,8 +17,6 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
     const { userId, city } = body
     try { 
 
-        // console.log("City", city)
-
         // get all users in the city and their assets
         let aggregateQuery = User.aggregate([
             {
@@ -26,9 +24,6 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
                     "location.city": {
                         $in: [city]
                     }
-                    // "email": {
-                    //     $in: ["chantour@gmail.com"]
-                    // }
                 }
             },
             {
@@ -51,12 +46,12 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
 
         for await (const doc of aggregateQuery) {
 
-            const buy = await BuyHistory.find({user_id: doc.firebase_uuid})
-            const sell = await SellHistory.find({user_id: doc.firebase_uuid})
+            const buy = await BuyHistory.find({user_id: doc.firebase_uuid}).count()
+            const sell = await SellHistory.find({user_id: doc.firebase_uuid}).count()
 
-            let totalTrades = buy.length + sell.length
-            
-            // Minimum of 10 trades
+            let totalTrades = buy + sell
+
+            // Minimum of 2 trades
             if(totalTrades > 2){
                 let newassets = lodash.groupBy(doc.assets, 'ticker')
             
@@ -80,19 +75,29 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
     
                 topArr.push({
                     username: doc.username,
+                    id: doc.firebase_uuid,
                     performance: performance
                 })
             }
 
         }
 
-        // Sort by performance and return top 10
+        // Sort by performance
         topArr.sort((a, b) => (a.performance > b.performance) ? -1 : 1)
+
+        // find user rank and index
+        let index = topArr.findIndex(object => {
+            return object.id === userId;
+        });
+
+        // if index is -1, user is not found/exist in the array
+        let userRank = index !== -1 ? index + 1 : 0
+
+        // slice the array to get top 10
         topArr = topArr.slice(0, 10)
 
-        // console.log("TopArr", topArr)
 
-        res.status(200).json({ success: true, traders: topArr, message: "Top 10 users" });
+        res.status(200).json({ success: true, rank: userRank, traders: topArr, message: "Success! Here are the Top 10 users" });
     } catch (error) {
         res.status(500).json({success: false, message: error.message});
     }
