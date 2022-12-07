@@ -35,6 +35,10 @@ const userSchema = new Schema(
             required: [false, "Please add an fcm_token"],
             unique: true,
         },
+        picture:{
+            type: String,
+            default: "https://firebasestorage.googleapis.com/v0/b/trade-up-bc1be.appspot.com/o/user_placeholder.jpg?alt=media&token=f4a15f20-ca35-449f-bf12-394e246d8be2"
+        },
         wallet: {
             name: {
                 type: String,

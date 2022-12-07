@@ -76,6 +76,7 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
                 topArr.push({
                     username: doc.username,
                     id: doc.firebase_uuid,
+                    picture: doc.picture ? doc.picture : "https://firebasestorage.googleapis.com/v0/b/trade-up-bc1be.appspot.com/o/user_placeholder.jpg?alt=media&token",
                     performance: performance
                 })
             }
