@@ -86,7 +86,8 @@ const userSignup = asyncHandler(async (req, res) => {
             success: true,
             token: token,
             user: user,
-            // userId: credential.user.uid,
+            userId: credential.user.uid,
+            fcm_token: user.fcm_token,
             message: "Login success",
         });
     } catch (error) {
