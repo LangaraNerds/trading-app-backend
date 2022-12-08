@@ -1,7 +1,10 @@
 const axios = require("axios");
 
 exports.fetchPrice = async (ticker) => {
-    const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${ticker}`);
-    const coinJson = coinFetch.data;
-    return parseFloat(coinJson.price);
+    const {data} = await axios.get(`${process.env.PRICE_API}${ticker}`);
+
+    const currentPrice = parseFloat(data.lastPrice);
+    const priceChangePercent = parseFloat(data.priceChangePercent);
+
+    return {currentPrice: currentPrice, priceChangePercent: priceChangePercent}
 }

@@ -5,7 +5,7 @@ const SellHistory = require("../models/sellHistoryModel")
 const {fetchPrice} = require("../utils/APIs");
 const lodash = require("lodash");
 const asyncHandler = require("express-async-handler");
-const axios = require("axios");
+
 
 
 /**
@@ -66,7 +66,8 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
     
                 for (const [key, value] of Object.entries(newassets)) {
                     const coinPrice = await fetchPrice(key)
-                    assetBalance = assetBalance + (value * coinPrice)
+                    const currentPrice = coinPrice.currentPrice
+                    assetBalance = assetBalance + (value * currentPrice)
                     totalBalance = doc.wallet.balance + assetBalance
                 }
                 
