@@ -3,7 +3,7 @@ const User = require("../models/userModel");
 const BuyHistory = require("../models/buyHistoryModel")
 const SellHistory = require("../models/sellHistoryModel")
 const asyncHandler = require("express-async-handler");
-const axios = require("axios");
+
 const {fetchPrice} = require("../utils/APIs");
 
 
@@ -24,11 +24,13 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
         const asset = await Asset.findOne({user_id: userId, ticker: coinTicker});
 
         const coinPrice = await fetchPrice(coinTicker)
+        const currentPrice = coinPrice.currentPrice
+
         const assetAmount = asset.quantity
 
         let balance = user.wallet.balance
-        const checkAmount = amount * coinPrice
-        const totalPrice = amount * coinPrice
+        const checkAmount = amount * currentPrice
+        const totalPrice = amount * currentPrice
 
         if (balance >= checkAmount) {
 
@@ -42,7 +44,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
                 }
             )
             if (updateAmount) {
-                let totalPrice = (amount * coinPrice)
+                let totalPrice = (amount * currentPrice)
                 balance = balance - totalPrice
                 await User.updateOne({_id: user.id}, {
                     $set: {
@@ -53,7 +55,7 @@ exports.buyCoin = asyncHandler(async ({body}, res) => {
                     user_id: userId,
                     ticker: coinTicker,
                     quantity: amount,
-                    price: coinPrice,
+                    price: currentPrice,
                     totalPrice: totalPrice
                 })
             }
@@ -91,15 +93,14 @@ exports.sellCoin = asyncHandler(async ({body}, res) => {
         const user = await User.findOne({firebase_uuid: userId});
         const asset = await Asset.findOne({user_id: userId, ticker: coinTicker});
 
-        const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinTicker}`);
-        const coinJson = coinFetch.data;
-        const coinPrice = coinJson.price;
+        const coinPrice = await fetchPrice(coinTicker)
+        const currentPrice = coinPrice.currentPrice
 
         let assetQuantity = asset.quantity;
         let balance = user.wallet.balance;
 
-        balance = balance + (amount * coinPrice);
-        const totalPrice = amount * coinPrice;
+        balance = balance + (amount * currentPrice);
+        const totalPrice = amount * currentPrice;
         if (assetQuantity >= amount) {
             const updateBalance = await User.updateOne({_id: user.id}, {
                 $set: {
@@ -120,7 +121,7 @@ exports.sellCoin = asyncHandler(async ({body}, res) => {
                     user_id: userId,
                     ticker: coinTicker,
                     quantity: amount,
-                    price: coinPrice,
+                    price: currentPrice,
                     totalPrice: totalPrice
                 })
 

@@ -57,10 +57,11 @@ exports.buyTransaction = async (coinTicker, coinQuantity, user_id) => {
         const user = await User.findOne({firebase_uuid: user_id});
         const asset = await Asset.findOne({user_id: user_id, ticker: coinTicker});
         const coinPrice = await fetchPrice(coinTicker);
+        const currentPrice = coinPrice.currentPrice
         const assetAmount = asset.quantity
 
         let balance = user.wallet.balance
-        const checkAmount = coinQuantity * coinPrice
+        const checkAmount = coinQuantity * currentPrice
         if (balance >= checkAmount) {
 
             let newAmount = assetAmount + coinQuantity;
@@ -73,7 +74,7 @@ exports.buyTransaction = async (coinTicker, coinQuantity, user_id) => {
                 }
             )
             if (updateAmount) {
-                let totalPrice = (coinQuantity * coinPrice)
+                let totalPrice = (coinQuantity * currentPrice)
                 balance = balance - totalPrice
                 await User.updateOne({_id: user.id}, {
                     $set: {
@@ -84,7 +85,7 @@ exports.buyTransaction = async (coinTicker, coinQuantity, user_id) => {
                     user_id: user_id,
                     ticker: coinTicker,
                     quantity: coinQuantity,
-                    price: coinPrice,
+                    price: currentPrice,
                     totalPrice: totalPrice
                 })
             }
@@ -102,13 +103,14 @@ exports.sellTransaction = async (coinTicker, coinQuantity, user_id) => {
         const user = await User.findOne({firebase_uuid: user_id});
         const asset = await Asset.findOne({user_id: user_id, ticker: coinTicker});
         const coinPrice = await fetchPrice(coinTicker);
-        const assetAmount = asset.quantity
+        const currentPrice = coinPrice.currentPrice
+
 
         let assetQuantity = asset.quantity;
         let balance = user.wallet.balance;
 
-        balance = balance + (coinQuantity * coinPrice);
-        const totalPrice = coinQuantity * coinPrice;
+        balance = balance + (coinQuantity * currentPrice);
+        const totalPrice = coinQuantity * currentPrice;
         if (assetQuantity >= coinQuantity) {
             const updateBalance = await User.updateOne({_id: user.id}, {
                 $set: {
@@ -129,7 +131,7 @@ exports.sellTransaction = async (coinTicker, coinQuantity, user_id) => {
                     user_id: user_id,
                     ticker: coinTicker,
                     quantity: coinQuantity,
-                    price: coinPrice,
+                    price: currentPrice,
                     totalPrice: totalPrice
                 })
             }

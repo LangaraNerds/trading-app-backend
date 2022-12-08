@@ -3,7 +3,6 @@ const BuyHistory = require("../models/buyHistoryModel")
 const SellHistory = require("../models/sellHistoryModel")
 const Asset = require("../models/assetsModel");
 const asyncHandler = require("express-async-handler");
-const axios = require("axios");
 const {fetchPrice} = require("../utils/APIs");
 
 
@@ -11,7 +10,7 @@ const {fetchPrice} = require("../utils/APIs");
  * @desc get balance of USDT of user
  * @route /api/wallet
  * @param userId
-* */
+ * */
 exports.userWallet = asyncHandler(async ({body}, res) => {
     const {userId} = body
 
@@ -31,8 +30,10 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
         let assetBalance = 0
 
         for (const asset of assets) {
+
             const coinPrice = await fetchPrice(asset.ticker)
-            assetBalance = assetBalance + (asset.quantity * coinPrice)
+            const currentPrice = coinPrice.currentPrice
+            assetBalance = assetBalance + (asset.quantity * currentPrice)
             totalBalance = usdtBalance + assetBalance
         }
 
@@ -59,28 +60,27 @@ exports.userWallet = asyncHandler(async ({body}, res) => {
  * */
 exports.walletAssets = asyncHandler(async ({body}, res) => {
     const {userId} = body
-    // userId = "KItp69rp3LbtIV9l5HseDudsd5P2"
-    try {
-        const user = await User.findOne({firebase_uuid: userId});
 
+    try {
 
         const assets = await Asset.find({user_id: userId});
 
-        /*https://www.binance.me/api/v3/ticker/price?symbols=%5B"ETHUSDT","BTCUSDT","XRPUSDT"%5D
-        * To do
-        * change to the other api to do only one request
-        * */
+        /*
+          * To do
+          * change to the other api to do only one request
+          * */
         let assetArr = []
         for (const asset of assets) {
             let assetBalance = 0
-            const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${asset.ticker}`);
-            const coinJson = coinFetch.data
-            const coinPrice = coinJson.price
-            assetBalance = asset.quantity * coinPrice;
+            const coinPrice = await fetchPrice(asset.ticker)
+            const currentPrice = coinPrice.currentPrice
+            const priceChangePercent = coinPrice.priceChangePercent
+            assetBalance = asset.quantity * currentPrice;
             assetArr.push({
                 name: asset.name,
                 ticker: asset.ticker,
                 quantity: asset.quantity,
+                priceChangePercent: priceChangePercent,
                 usdtBalance: assetBalance
             })
 
