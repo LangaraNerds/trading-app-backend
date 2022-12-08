@@ -39,13 +39,15 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
         //     console.log("res", res)
         // })
 
-        let totalBalance = 0
-        let assetBalance = 0
-        let performance = 0
+      
         let topArr = []
 
         for await (const doc of aggregateQuery) {
 
+            let totalBalance = 0
+            let assetBalance = 0
+            let performance = 0
+        
             const buy = await BuyHistory.find({user_id: doc.firebase_uuid}).count()
             const sell = await SellHistory.find({user_id: doc.firebase_uuid}).count()
 
