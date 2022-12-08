@@ -18,19 +18,19 @@ exports.AlertTasks = () => {
 
             if (coinAlerts) {
                 const coinPrice = await fetchPrice(coinTicker)
+                const currentPrice = coinPrice.currentPrice
+
                 for (const alertPrice of coinAlerts) {
 
-
-
                     price = alertPrice.price
-                    if (alertPrice.type === 'up' && coinPrice >= alertPrice.price && !alertPrice.notified) {
+                    if (alertPrice.type === 'up' && currentPrice >= alertPrice.price && !alertPrice.notified) {
                         usersId.push(alertPrice.user_id)
-                        console.log(alertPrice.user_id)
-                    } else if (alertPrice.type === 'down' && coinPrice <= alertPrice.price && !alertPrice.notified) {
+
+                    } else if (alertPrice.type === 'down' && currentPrice <= alertPrice.price && !alertPrice.notified) {
                         usersId.push(alertPrice.user_id)
                     }
                 }
-               await pushNotification(usersId, coinPrice, price, 'alert', name, coinTicker);
+               await pushNotification(usersId, currentPrice, price, 'alert', name, coinTicker);
             }
         }
     })

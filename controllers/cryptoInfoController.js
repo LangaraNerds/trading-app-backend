@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const axios = require("axios");
 const {symbols, coinName} = require("../utils/constants");
 const LimitOrder = require("../models/limitOrderModel");
+const {fetchPrice} = require("../utils/APIs");
 
 
 /**
@@ -24,15 +25,14 @@ exports.coinSingle = asyncHandler(async ({body}, res) => {
         const coinQuantity = asset.quantity
         const balance = user.wallet.balance
 
-        const coinFetch = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinTicker}`);
-        const coinJson = coinFetch.data
-        const coinPrice = coinJson.price
+        const coinPrice = await fetchPrice(coinTicker)
+        const currentPrice = coinPrice.currentPrice
 
         res.status(200).json({
             success: true,
             coinQuantity: coinQuantity,
             usdtBalance: balance,
-            currentPrice: coinPrice,
+            currentPrice: currentPrice,
             message: "Success",
 
         });
@@ -169,7 +169,7 @@ exports.orderLimit = asyncHandler(async ({body}, res) => {
 
 /**
  * @desc get all the alerts
- * @route /api/crypto/alerts
+ * @route /api/crypto/alert/info
  * @param userId
  * */
 exports.alertsInfo = asyncHandler(async ({body}, res) => {

@@ -16,10 +16,10 @@ exports.OrderTasks = () => {
             let usersId = []
             if (orderLimit) {
                 const coinPrice = await fetchPrice(coinTicker)
-
+                const currentPrice = coinPrice.currentPrice
                 for (const order of orderLimit) {
 
-                    if (order.typeOrder === 'buy' && coinPrice <= order.price && !order.status) {
+                    if (order.typeOrder === 'buy' && currentPrice <= order.price && !order.status) {
 
                         price = order.price
                         await buyTransaction(coinTicker, order.quantity, order.user_id)
@@ -27,7 +27,7 @@ exports.OrderTasks = () => {
                     }
                 }
                 if (usersId !== '') {
-                    pushNotification(usersId, coinPrice, price, 'buy', name, coinTicker);
+                    pushNotification(usersId, currentPrice, price, 'buy', name, coinTicker);
                 }
             }
         }
@@ -41,16 +41,16 @@ exports.OrderTasks = () => {
             let usersId = []
             if (orderLimit) {
                 const coinPrice = await fetchPrice(coinTicker)
-
+                const currentPrice = coinPrice.currentPrice
                 for (const order of orderLimit) {
-                    if (order.typeOrder === 'sell' && coinPrice >= order.price && !order.status) {
+                    if (order.typeOrder === 'sell' && currentPrice >= order.price && !order.status) {
                         price = order.price
                         await sellTransaction(coinTicker, order.quantity, order.user_id)
                         usersId.push(order.user_id)
                     }
                 }
                 if (usersId !== '') {
-                    pushNotification(usersId, coinPrice, price, 'sell', name, coinTicker);
+                    pushNotification(usersId, currentPrice, price, 'sell', name, coinTicker);
                 }
             }
         }
