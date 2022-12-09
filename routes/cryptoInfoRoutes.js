@@ -4,13 +4,13 @@ const {coinSingle, trendingCoins, priceAlert, orderLimit, alertsInfo, orderHisto
 const {isAuthenticated} = require('../middleware/authMiddleware');
 module.exports = function (app) {
 
-    router.post("/", coinSingle);
-    router.get("/trending", trendingCoins);
-    router.post("/alert", priceAlert);
+    router.post("/", isAuthenticated, coinSingle);
+    router.get("/trending", isAuthenticated, trendingCoins);
+    router.post("/alert", isAuthenticated,priceAlert);
     router.post("/alert/info", alertsInfo);
-    router.post("/order", orderLimit);
-    router.post("/order/history", orderHistory);
-    router.post("/order/active", ordersActives);
+    router.post("/order", isAuthenticated, orderLimit);
+    router.post("/order/history", isAuthenticated, orderHistory);
+    router.post("/order/active", isAuthenticated, ordersActives);
 
     app.use('/api/crypto', router)
 }

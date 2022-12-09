@@ -6,8 +6,6 @@ const {fetchPrice} = require("../utils/APIs");
 const lodash = require("lodash");
 const asyncHandler = require("express-async-handler");
 
-
-
 /**
  * @desc get top ten users base on their performance and city
  * @route /api/leaderboard
@@ -35,11 +33,7 @@ exports.topTraders = asyncHandler(async ({body}, res) => {
                 }
             },
         ])
-        // aggregateQuery.exec(function(err,res){
-        //     console.log("res", res)
-        // })
 
-      
         let topArr = []
 
         for await (const doc of aggregateQuery) {

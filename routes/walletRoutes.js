@@ -6,8 +6,8 @@ const {isAuthenticated} = require('../middleware/authMiddleware')
 
 module.exports = function (app) {
 
-    router.post("/", userWallet);
-    router.post("/assets", walletAssets);
-    router.post("/history", tradeHistory);
+    router.post("/", isAuthenticated, userWallet);
+    router.post("/assets", isAuthenticated, walletAssets);
+    router.post("/history", isAuthenticated, tradeHistory);
     app.use('/api/wallet', router)
 }

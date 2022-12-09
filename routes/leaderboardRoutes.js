@@ -4,6 +4,6 @@ const {topTraders} = require("../controllers/leaderboardController")
 const {isAuthenticated} = require('../middleware/authMiddleware')
 
 module.exports = function (app) {
-    router.post("/", topTraders);
+    router.post("/", isAuthenticated, topTraders);
     app.use('/api/leaderboard', router)
 }
